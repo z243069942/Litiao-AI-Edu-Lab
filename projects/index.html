@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>全部项目 — 立涛 AI 教育实验室</title>
+<meta name="description" content="赵立涛 AI 教育实验室 — 全部项目汇总">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:       #08090e;
+  --bg2:      #0e1018;
+  --card:     #13161f;
+  --card2:    #1a1e2e;
+  --border:   #1f2340;
+  --border2:  #2a2f50;
+  --accent:   #6c63ff;
+  --accent2:  #00d4aa;
+  --pink:     #f472b6;
+  --gold:     #fbbf24;
+  --blue:     #38bdf8;
+  --text:     #e2e8f0;
+  --muted:    #64748b;
+  --muted2:   #94a3b8;
+  --radius:   14px;
+}
+body { background: var(--bg); color: var(--text); font-family: 'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif; line-height: 1.6; }
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; }
+
+/* NAV */
+nav { position: fixed; top:0; left:0; right:0; z-index:100; background: rgba(8,9,14,.92); backdrop-filter: blur(20px); border-bottom:1px solid var(--border); padding: 0 24px; height:64px; display:flex; align-items:center; justify-content:space-between; }
+.nav-logo { display:flex; align-items:center; gap:10px; font-size:1.05rem; font-weight:700; }
+.nav-logo .logo-icon { width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg,var(--accent),var(--accent2)); display:flex; align-items:center; justify-content:center; font-size:16px; }
+.nav-logo .logo-text { background:linear-gradient(90deg,#fff 40%,var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.nav-links { display:flex; gap:4px; list-style:none; }
+.nav-links a { padding:6px 14px; border-radius:var(--radius-sm); font-size:.875rem; color:var(--muted2); transition:color .2s,background .2s; }
+.nav-links a:hover { color:var(--text); background:var(--card); }
+.nav-cta { padding:8px 20px; border-radius:20px; background:linear-gradient(135deg,var(--accent),#8b5cf6); color:#fff; font-size:.875rem; font-weight:600; box-shadow:0 4px 14px rgba(108,99,255,.35); transition:opacity .2s,transform .2s; }
+.nav-cta:hover { opacity:.9; transform:translateY(-1px); }
+
+/* PAGE HEADER */
+.page-header { padding:140px 24px 60px; text-align:center; background:var(--bg2); border-bottom:1px solid var(--border); }
+.page-header h1 { font-size:clamp(2rem,5vw,3rem); font-weight:800; }
+.page-header h1 span { background:linear-gradient(90deg,var(--accent),var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.page-header p { color:var(--muted2); margin-top:12px; font-size:1.05rem; }
+
+/* GRID */
+.projects-full { max-width:1200px; margin:0 auto; padding:60px 24px 80px; }
+.projects-full h2 { font-size:1.4rem; font-weight:700; margin-bottom:32px; padding-bottom:12px; border-bottom:1px solid var(--border); }
+.grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:24px; margin-bottom:48px; }
+
+/* CARD */
+.card {
+  background:var(--card); border:1px solid var(--border); border-radius:18px;
+  padding:24px; display:flex; flex-direction:column; gap:14px;
+  transition:transform .25s,box-shadow .25s;
+}
+.card:hover { transform:translateY(-4px); box-shadow:0 16px 40px rgba(0,0,0,.45); }
+.card-top { display:flex; align-items:flex-start; gap:14px; }
+.card-icon { width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.4rem; flex-shrink:0; }
+.icon-ai     { background:rgba(108,99,255,.15); border:1px solid rgba(108,99,255,.3); }
+.icon-exam   { background:rgba(0,212,170,.12);  border:1px solid rgba(0,212,170,.25); }
+.icon-game   { background:rgba(251,191,36,.12); border:1px solid rgba(251,191,36,.25); }
+.icon-course { background:rgba(244,114,182,.12); border:1px solid rgba(244,114,182,.25); }
+.card-meta { flex:1; }
+.card-pid { font-size:.68rem; color:var(--muted); font-family:monospace; }
+.card-status { font-size:.62rem; padding:2px 8px; border-radius:8px; display:inline-block; margin-top:3px; font-weight:600; text-transform:uppercase; letter-spacing:.05em; }
+.st-dev   { background:rgba(251,191,36,.12); color:var(--gold);  border:1px solid rgba(251,191,36,.3); }
+.st-green { background:rgba(0,212,170,.12); color:var(--accent2); border:1px solid rgba(0,212,170,.25); }
+
+.card h3 { font-size:1.05rem; font-weight:700; }
+.card p { font-size:.82rem; color:var(--muted2); line-height:1.6; flex:1; }
+.card-tags { display:flex; gap:6px; flex-wrap:wrap; }
+.tag { font-size:.65rem; padding:3px 9px; border-radius:8px; background:var(--card2); border:1px solid var(--border2); color:var(--muted2); }
+.tag-g { background:rgba(0,212,170,.1); border-color:rgba(0,212,170,.25); color:var(--accent2); }
+.tag-y { background:rgba(251,191,36,.1); border-color:rgba(251,191,36,.25); color:var(--gold); }
+.card-footer { display:flex; align-items:center; justify-content:space-between; padding-top:14px; border-top:1px solid var(--border); font-size:.72rem; }
+.card-dir { color:var(--accent2); font-family:monospace; background:rgba(0,212,170,.07); padding:3px 8px; border-radius:6px; }
+.card-arrow { color:var(--muted); transition:all .2s; }
+.card:hover .card-arrow { color:var(--accent); transform:translateX(3px); }
+
+/* BACK */
+.back-home { text-align:center; padding:0 24px 60px; }
+.back-btn { display:inline-flex; align-items:center; gap:8px; padding:12px 32px; border-radius:50px; background:var(--card); border:1px solid var(--border2); color:var(--text); font-size:.95rem; font-weight:600; transition:all .25s; }
+.back-btn:hover { border-color:var(--accent); box-shadow:0 0 20px rgba(108,99,255,.15); }
+
+/* FOOTER */
+footer { background:var(--bg); border-top:1px solid var(--border); padding:40px 24px; text-align:center; font-size:.78rem; color:var(--muted); }
+
+/* RESPONSIVE */
+@media(max-width:900px){ .nav-links,.nav-cta{display:none} }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="logo-icon">🌳</div>
+    <span class="logo-text">立涛 AI Edu Lab</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html#projects">旗舰产品</a></li>
+    <li><a href="index.html#ai-demo">体验 AI</a></li>
+    <li><a href="index.html#blog">博客</a></li>
+    <li><a href="index.html#about">关于</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <h1>全部<span>项目</span></h1>
+  <p>从 AI 助学系统到互动游戏，每个项目都解决一个具体的教育问题</p>
+</div>
+
+<div class="projects-full">
+
+  <!-- AI 产品 -->
+  <h2>🤖 AI 学习产品</h2>
+  <div class="grid">
+
+    <div class="card c-ai" onclick="location.href='../index.html#projects'">
+      <div class="card-top">
+        <div class="card-icon icon-ai">🤖</div>
+        <div class="card-meta">
+          <div class="card-pid">P001</div>
+          <div class="card-status st-dev">开发中</div>
+        </div>
+      </div>
+      <h3>AI 助学助手</h3>
+      <p>不直接给答案的启发式 AI 学习系统，引导学生自主思考与探索</p>
+      <div class="card-tags">
+        <span class="tag">HTML/JS</span><span class="tag">Flask</span><span class="tag">AI API</span>
+      </div>
+      <div class="card-footer">
+        <span class="card-dir">projects/P001</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </div>
+
+    <div class="card c-ai" onclick="location.href='../index.html#projects'">
+      <div class="card-top">
+        <div class="card-icon icon-ai">✨</div>
+        <div class="card-meta">
+          <div class="card-pid">P004</div>
+          <div class="card-status st-dev">开发中</div>
+        </div>
+      </div>
+      <h3>QuizGPT</h3>
+      <p>AI 驱动的互动测验平台，自动生成题目、即时评分、智能讲解</p>
+      <div class="card-tags">
+        <span class="tag">HTML/JS</span><span class="tag">AI API</span>
+      </div>
+      <div class="card-footer">
+        <span class="card-dir">projects/P004</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </div>
+
+    <div class="card c-ai" onclick="location.href='../blog/posts/2026-05-17-socratic-ai.html'">
+      <div class="card-top">
+        <div class="card-icon icon-ai">🧠</div>
+        <div class="card-meta">
+          <div class="card-pid">P007</div>
+          <div class="card-status st-dev">升级中</div>
+        </div>
+      </div>
+      <h3>苏格拉底学习引擎 V2</h3>
+      <p>升级版启发式学习引擎，支持学生管理、独立数据、多学生切换</p>
+      <div class="card-tags">
+        <span class="tag">HTML/JS</span><span class="tag tag-y">V2升级中</span>
+      </div>
+      <div class="card-footer">
+        <span class="card-dir">2026-05-05-task-2/</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 考试/刷题 -->
+  <h2>📝 考试刷题系统</h2>
+  <div class="grid">
+
+    <div class="card c-exam">
+      <div class="card-top">
+        <div class="card-icon icon-exam">📝</div>
+        <div class="card-meta">
+          <div class="card-pid">P002</div>
+          <div class="card-status st-green">可运行</div>
+        </div>
+      </div>
+      <h3>在线考试系统</h3>
+      <p>支持多题型与自动判卷的在线考试平台，可一键生成试卷</p>
+      <div class="card-tags">
+        <span class="tag tag-g">可运行</span><span class="tag">HTML/JS</span><span class="tag">Flask</span>
+      </div>
+      <div class="card-footer">
+        <span class="card-dir">exams/P002</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </div>
+
+    <div class="card c-exam">
+      <div class="card-top">
+        <div class="card-icon icon-exam">🗺️</div>
+        <div class="card-meta">
+          <div class="card-pid">P005</div>
+          <div class="card-status st-green">可运行</div>
+        </div>
+      </div>
+      <h3>网络工程师刷题系统</h3>
+      <p>软考网络工程师可视化刷题平台，含数据图表分析与进度追踪</p>
+      <div class="card-tags">
+        <span class="tag tag-g">可运行</span><span class="tag">HTML/JS</span><span class="tag">软考</span>
+      </div>
+      <div class="card-footer">
+        <span class="card-dir">exams/P005</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 游戏化学习 -->
+  <h2>🎮 游戏化学习</h2>
+  <div class="grid">
+
+    <div class="card c-game">
+      <div class="card-top">
+        <div class="card-icon icon-game">🐍</div>
+        <div class="card-meta">
+          <div class="card-pid">P003</div>
+          <div class="card-status st-dev">开发中</div>
+        </div>
+      </div>
+      <h3>Python 闯关平台</h3>
+      <p>游戏化 Python 编程学习平台，关卡闯关 + 即时反馈 + 积分排行</p>
+      <div class="card-tags">
+        <span class="tag tag-y">开发中</span><span class="tag">HTML/JS</span><span class="tag">游戏化</span>
+      </div>
+      <div class="card-footer">
+        <span class="card-dir">games/P003</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 课程平台 -->
+  <h2>🎓 课程平台</h2>
+  <div class="grid">
+
+    <div class="card c-course">
+      <div class="card-top">
+        <div class="card-icon icon-course">🎓</div>
+        <div class="card-meta">
+          <div class="card-pid">P006</div>
+          <div class="card-status st-dev">规划中</div>
+        </div>
+      </div>
+      <h3>AIGC 互动课程平台</h3>
+      <p>面向高中生与职业学员的 AIGC 互动学习平台，知识 + 练习 + 测验</p>
+      <div class="card-tags">
+        <span class="tag tag-y">规划中</span><span class="tag">AIGC</span><span class="tag">课程设计</span>
+      </div>
+      <div class="card-footer">
+        <span class="card-dir">courses/P006</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </div>
+
+  </div>
+
+</div><!-- /projects-full -->
+
+<div class="back-home">
+  <a href="index.html" class="back-btn">← 返回首页</a>
+</div>
+
+<footer>
+  <p>© 2026 立涛 AI 教育实验室 · 构建 AI 教育生态</p>
+</footer>
+
+</body>
+</html>
