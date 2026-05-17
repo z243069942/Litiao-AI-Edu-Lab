@@ -1,0 +1,18 @@
+# Keep website files
+*.html
+*.css
+*.js
+*.png
+*.jpg
+*.svg
+
+# Ignore local docs and archives (not needed in GitHub Pages deploy)
+docs/
+archive/
+.workbuddy/
+*.xlsx
+*.docx
+
+# OS
+.DS_Store
+Thumbs.db
