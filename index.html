@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>立涛 AI 教育实验室 · 构建 AI 教育生态</title>
+<meta name="description" content="赵立涛 AI 教育实验室 — 互动课程、智能工具、编程游戏、教育研究的统一平台">
+<style>
+/* ===================== RESET & VARS ===================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:       #08090e;
+  --bg2:      #0e1018;
+  --card:     #13161f;
+  --card2:    #1a1e2e;
+  --border:   #1f2340;
+  --border2:  #2a2f50;
+  --accent:   #6c63ff;
+  --accent2:  #00d4aa;
+  --pink:     #f472b6;
+  --gold:     #fbbf24;
+  --blue:     #38bdf8;
+  --text:     #e2e8f0;
+  --muted:    #64748b;
+  --muted2:   #94a3b8;
+  --radius:   14px;
+  --radius-sm:8px;
+  --shadow:   0 4px 24px rgba(0,0,0,.5);
+  --glow:     0 0 40px rgba(108,99,255,.15);
+}
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; }
+
+/* ===================== SCROLLBAR ===================== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+/* ===================== NAV ===================== */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(8,9,14,.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 clamp(16px, 5vw, 60px);
+  height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  transition: background .3s;
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 1.1rem; font-weight: 700;
+}
+.nav-logo .logo-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.nav-logo .logo-text { background: linear-gradient(90deg, #fff 40%, var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.nav-links { display: flex; gap: 4px; list-style: none; }
+.nav-links a {
+  padding: 6px 14px; border-radius: var(--radius-sm);
+  font-size: .875rem; color: var(--muted2);
+  transition: color .2s, background .2s;
+}
+.nav-links a:hover { color: var(--text); background: var(--card); }
+.nav-cta {
+  padding: 8px 20px; border-radius: 20px;
+  background: linear-gradient(135deg, var(--accent), #8b5cf6);
+  color: #fff; font-size: .875rem; font-weight: 600;
+  transition: opacity .2s, transform .2s;
+  box-shadow: 0 4px 14px rgba(108,99,255,.35);
+}
+.nav-cta:hover { opacity: .9; transform: translateY(-1px); }
+.nav-mobile-toggle { display: none; background: none; border: none; color: var(--text); font-size: 1.4rem; cursor: pointer; }
+.mobile-menu {
+  display: none; position: fixed; top: 64px; left: 0; right: 0; z-index: 99;
+  background: var(--bg2); border-bottom: 1px solid var(--border);
+  padding: 16px 24px 24px; flex-direction: column; gap: 8px;
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu a { padding: 10px 14px; border-radius: var(--radius-sm); color: var(--muted2); font-size: .95rem; }
+.mobile-menu a:hover { background: var(--card); color: var(--text); }
+
+/* ===================== HERO ===================== */
+.hero {
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  padding: 80px clamp(16px,5vw,60px) 60px;
+  position: relative; overflow: hidden;
+  text-align: center;
+}
+/* Animated grid background */
+.hero-bg {
+  position: absolute; inset: 0; z-index: 0;
+  background-image:
+    linear-gradient(rgba(108,99,255,.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(108,99,255,.07) 1px, transparent 1px);
+  background-size: 60px 60px;
+  animation: gridMove 20s linear infinite;
+}
+@keyframes gridMove { from { background-position: 0 0; } to { background-position: 60px 60px; } }
+.hero-glow {
+  position: absolute; top: 20%; left: 50%; transform: translateX(-50%);
+  width: 600px; height: 300px;
+  background: radial-gradient(ellipse, rgba(108,99,255,.18) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-content { position: relative; z-index: 1; max-width: 820px; margin: 0 auto; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(108,99,255,.12); border: 1px solid rgba(108,99,255,.3);
+  color: #a78bfa; padding: 6px 16px; border-radius: 20px;
+  font-size: .8rem; font-weight: 500; margin-bottom: 28px;
+  animation: fadeDown .6s ease both;
+}
+.hero-badge::before { content: '●'; font-size: 8px; color: var(--accent2); animation: blink 2s infinite; }
+@keyframes blink { 0%,100% { opacity:1; } 50% { opacity:.3; } }
+.hero h1 {
+  font-size: clamp(2.2rem, 6vw, 4rem);
+  font-weight: 800; line-height: 1.15;
+  margin-bottom: 20px;
+  animation: fadeDown .7s .1s ease both;
+}
+.hero h1 .line1 { display: block; color: #fff; }
+.hero h1 .line2 {
+  display: block;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--accent2) 50%, var(--pink) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-size: 200% auto; animation: shine 4s linear infinite, fadeDown .7s .1s ease both;
+}
+@keyframes shine { to { background-position: 200% center; } }
+.hero-desc {
+  font-size: clamp(1rem,2.5vw,1.15rem); color: var(--muted2); max-width: 580px;
+  margin: 0 auto 36px; line-height: 1.8;
+  animation: fadeDown .7s .2s ease both;
+}
+.hero-btns {
+  display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+  animation: fadeDown .7s .3s ease both;
+}
+.btn-primary {
+  padding: 13px 30px; border-radius: 50px;
+  background: linear-gradient(135deg, var(--accent), #8b5cf6);
+  color: #fff; font-size: 1rem; font-weight: 600;
+  box-shadow: 0 6px 20px rgba(108,99,255,.4);
+  transition: transform .2s, box-shadow .2s;
+  display: flex; align-items: center; gap: 8px;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(108,99,255,.5); }
+.btn-ghost {
+  padding: 13px 30px; border-radius: 50px;
+  background: transparent; border: 1px solid var(--border2);
+  color: var(--muted2); font-size: 1rem;
+  transition: all .2s;
+  display: flex; align-items: center; gap: 8px;
+}
+.btn-ghost:hover { border-color: var(--accent); color: var(--text); background: rgba(108,99,255,.08); }
+.hero-stats {
+  display: flex; gap: 40px; justify-content: center; flex-wrap: wrap;
+  margin-top: 64px;
+  animation: fadeDown .7s .4s ease both;
+}
+.stat { text-align: center; }
+.stat-num { font-size: 2rem; font-weight: 800; background: linear-gradient(135deg, var(--accent2), var(--blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.stat-label { font-size: .78rem; color: var(--muted); margin-top: 2px; }
+
+/* scroll indicator */
+.scroll-indicator {
+  position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  color: var(--muted); font-size: .75rem;
+  animation: float 3s ease-in-out infinite;
+}
+.scroll-dot { width: 5px; height: 5px; background: var(--accent); border-radius: 50%; }
+@keyframes float { 0%,100%{transform:translateX(-50%) translateY(0);} 50%{transform:translateX(-50%) translateY(6px);} }
+
+/* ===================== SECTIONS ===================== */
+section { padding: clamp(60px,8vw,100px) clamp(16px,5vw,60px); }
+.section-inner { max-width: 1260px; margin: 0 auto; }
+.section-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: .75rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--accent); background: rgba(108,99,255,.1);
+  padding: 5px 13px; border-radius: 20px; border: 1px solid rgba(108,99,255,.2);
+  margin-bottom: 16px;
+}
+.section-title { font-size: clamp(1.7rem,4vw,2.4rem); font-weight: 800; margin-bottom: 10px; }
+.section-subtitle { color: var(--muted2); font-size: 1.05rem; max-width: 560px; }
+
+/* ===================== PROJECTS ===================== */
+#projects { background: var(--bg2); }
+.projects-grid {
+  margin-top: 48px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 20px;
+}
+.project-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 24px;
+  transition: transform .25s, box-shadow .25s, border-color .25s;
+  position: relative; overflow: hidden; cursor: pointer;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.project-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  transition: opacity .3s;
+}
+.project-card:hover { transform: translateY(-5px); box-shadow: 0 16px 40px rgba(0,0,0,.5); border-color: var(--border2); }
+/* accent lines by category */
+.c-ai::before    { background: linear-gradient(90deg,var(--accent),#a78bfa); }
+.c-exam::before  { background: linear-gradient(90deg,var(--accent2),var(--blue)); }
+.c-game::before  { background: linear-gradient(90deg,var(--gold),#f97316); }
+.c-course::before{ background: linear-gradient(90deg,var(--pink),#a855f7); }
+.c-research::before{ background: linear-gradient(90deg,var(--blue),var(--accent2)); }
+.c-brand::before { background: linear-gradient(90deg,#f43f5e,var(--gold)); }
+
+.project-card:hover::before { opacity: 1; }
+
+.card-top { display: flex; align-items: flex-start; justify-content: space-between; }
+.card-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center; font-size: 22px;
+  flex-shrink: 0;
+}
+.icon-ai     { background: rgba(108,99,255,.15); }
+.icon-exam   { background: rgba(0,212,170,.12); }
+.icon-game   { background: rgba(251,191,36,.12); }
+.icon-course { background: rgba(244,114,182,.12); }
+.icon-research{background: rgba(56,189,248,.12); }
+.icon-brand  { background: rgba(244,63,94,.12); }
+
+.card-meta { text-align: right; }
+.card-pid  { font-size: .7rem; color: var(--muted); font-family: monospace; }
+.card-core { font-size: .68rem; background: rgba(251,191,36,.12); color: var(--gold); border: 1px solid rgba(251,191,36,.3); padding: 2px 8px; border-radius: 10px; display: inline-block; margin-top: 3px; }
+
+.card-body h3 { font-size: 1.05rem; font-weight: 600; }
+.card-body p  { font-size: .83rem; color: var(--muted2); line-height: 1.55; }
+
+.card-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.tag {
+  font-size: .7rem; padding: 3px 9px; border-radius: 10px;
+  background: var(--card2); border: 1px solid var(--border2); color: var(--muted2);
+}
+.tag-green { background: rgba(34,197,94,.08); border-color: rgba(34,197,94,.25); color: #4ade80; }
+.tag-yellow { background: rgba(251,191,36,.08); border-color: rgba(251,191,36,.25); color: #fbbf24; }
+.tag-red { background: rgba(239,68,68,.08); border-color: rgba(239,68,68,.25); color: #f87171; }
+
+.card-score {
+  display: flex; gap: 12px;
+}
+.score-bar-item { flex: 1; }
+.score-bar-item label { font-size: .68rem; color: var(--muted); display: flex; justify-content: space-between; margin-bottom: 3px; }
+.bar-track { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 2px; }
+
+.card-next {
+  font-size: .78rem; color: var(--muted); background: var(--card2);
+  padding: 8px 12px; border-radius: var(--radius-sm); border-left: 2px solid var(--accent);
+}
+.card-next strong { color: var(--text); font-weight: 400; }
+
+.card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: auto; }
+.card-dir { font-size: .72rem; color: var(--accent2); font-family: monospace; background: rgba(0,212,170,.07); padding: 3px 8px; border-radius: 6px; border: 1px solid rgba(0,212,170,.15); }
+.card-arrow { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--border2); display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--muted); transition: all .2s; }
+.project-card:hover .card-arrow { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+/* ===================== ROUTES ===================== */
+#routes { background: var(--bg); }
+.routes-grid { margin-top: 48px; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+.route-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 20px 22px; display: flex; align-items: center; gap: 14px;
+  transition: all .25s; cursor: pointer;
+}
+.route-card:hover { border-color: var(--border2); background: var(--card2); transform: translateX(4px); }
+.route-icon { font-size: 1.8rem; flex-shrink: 0; width: 48px; text-align: center; }
+.route-info { flex: 1; }
+.route-path { font-size: .78rem; font-family: monospace; color: var(--accent); margin-bottom: 3px; }
+.route-label { font-size: .95rem; font-weight: 600; }
+.route-desc { font-size: .78rem; color: var(--muted2); margin-top: 2px; }
+.route-count { font-size: .78rem; color: var(--muted); background: var(--card2); padding: 2px 8px; border-radius: 10px; flex-shrink: 0; }
+
+/* ===================== COURSES ===================== */
+#courses { background: var(--bg2); }
+.courses-grid { margin-top: 48px; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+.course-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden;
+  transition: transform .25s, box-shadow .25s;
+}
+.course-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,.45); }
+.course-header { padding: 20px 20px 16px; background: linear-gradient(135deg, var(--card2), var(--card)); border-bottom: 1px solid var(--border); }
+.course-emoji { font-size: 2rem; margin-bottom: 10px; }
+.course-header h3 { font-size: 1rem; font-weight: 700; }
+.course-header p { font-size: .8rem; color: var(--muted2); margin-top: 4px; }
+.course-body { padding: 14px 20px 20px; }
+.course-items { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.course-items li { font-size: .8rem; color: var(--muted2); display: flex; align-items: center; gap: 8px; }
+.course-items li::before { content: '→'; color: var(--accent2); flex-shrink: 0; }
+.course-badge { margin-top: 14px; display: inline-block; font-size: .7rem; padding: 3px 10px; border-radius: 10px; background: rgba(108,99,255,.1); color: var(--accent); border: 1px solid rgba(108,99,255,.2); }
+
+/* ===================== TOOLS ===================== */
+#ai-tools { background: var(--bg); }
+.tools-grid { margin-top: 48px; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+.tool-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 22px; transition: all .25s; cursor: pointer; text-align: center;
+}
+.tool-card:hover { border-color: var(--accent); box-shadow: 0 0 20px rgba(108,99,255,.15); transform: translateY(-3px); }
+.tool-icon { font-size: 2.2rem; margin-bottom: 12px; }
+.tool-card h3 { font-size: .95rem; font-weight: 700; margin-bottom: 6px; }
+.tool-card p { font-size: .78rem; color: var(--muted2); }
+.tool-status { display: inline-block; margin-top: 12px; font-size: .68rem; padding: 2px 10px; border-radius: 10px; }
+.st-live { background: rgba(34,197,94,.1); color: #4ade80; border: 1px solid rgba(34,197,94,.25); }
+.st-dev  { background: rgba(251,191,36,.1); color: #fbbf24; border: 1px solid rgba(251,191,36,.25); }
+.st-plan { background: rgba(148,163,184,.1); color: var(--muted2); border: 1px solid var(--border2); }
+
+/* ===================== RESEARCH ===================== */
+#research { background: var(--bg2); }
+.research-grid { margin-top: 48px; display: grid; grid-template-columns: repeat(auto-fill, minmax(320px,1fr)); gap: 20px; }
+.research-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 22px; display: flex; flex-direction: column; gap: 10px; transition: all .25s;
+}
+.research-card:hover { border-color: var(--border2); transform: translateY(-3px); }
+.research-num { font-size: .7rem; font-family: monospace; color: var(--muted); }
+.research-card h3 { font-size: .98rem; font-weight: 600; }
+.research-card p { font-size: .8rem; color: var(--muted2); flex: 1; }
+.research-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+
+/* ===================== BLOG ===================== */
+#blog { background: var(--bg); }
+.blog-grid { margin-top: 48px; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px,1fr)); gap: 20px; }
+.blog-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 22px; transition: all .25s; cursor: pointer;
+}
+.blog-card:hover { border-color: var(--border2); transform: translateY(-3px); }
+.blog-date { font-size: .72rem; color: var(--muted); margin-bottom: 8px; }
+.blog-card h3 { font-size: .98rem; font-weight: 600; margin-bottom: 8px; line-height: 1.5; }
+.blog-card p { font-size: .8rem; color: var(--muted2); line-height: 1.6; }
+.blog-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+.blog-read { margin-top: 14px; font-size: .78rem; color: var(--accent); display: flex; align-items: center; gap: 4px; }
+.view-more {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 28px; border-radius: 24px;
+  background: var(--card); border: 1px solid var(--border2);
+  color: var(--muted2); font-size: .875rem; font-weight: 600;
+  transition: all .25s;
+}
+.view-more:hover { background: var(--card2); border-color: var(--accent); color: var(--accent); }
+
+/* ===================== ABOUT ===================== */
+#about {
+  background: linear-gradient(135deg, var(--bg2) 0%, #0a0c14 100%);
+  border-top: 1px solid var(--border);
+}
+.about-inner { max-width: 1260px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+.about-left h2 { font-size: clamp(1.7rem,3.5vw,2.3rem); font-weight: 800; margin-bottom: 16px; }
+.about-left h2 span { background: linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.about-left p { color: var(--muted2); font-size: .95rem; line-height: 1.8; margin-bottom: 12px; }
+.about-skills { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 8px; }
+.skill-chip { padding: 5px 14px; border-radius: 20px; background: var(--card); border: 1px solid var(--border2); font-size: .78rem; color: var(--muted2); }
+.about-right { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.about-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 18px; text-align: center;
+}
+.about-card .num { font-size: 1.8rem; font-weight: 800; background: linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.about-card .label { font-size: .78rem; color: var(--muted2); margin-top: 4px; }
+
+/* ===================== FOOTER ===================== */
+footer {
+  background: var(--bg); border-top: 1px solid var(--border);
+  padding: 48px clamp(16px,5vw,60px) 32px;
+}
+.footer-inner { max-width: 1260px; margin: 0 auto; }
+.footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
+.footer-brand p { color: var(--muted); font-size: .83rem; margin-top: 12px; line-height: 1.7; max-width: 280px; }
+.footer-col h4 { font-size: .85rem; font-weight: 600; margin-bottom: 14px; color: var(--text); }
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.footer-col ul li a { font-size: .82rem; color: var(--muted); transition: color .2s; }
+.footer-col ul li a:hover { color: var(--text); }
+.footer-bottom { border-top: 1px solid var(--border); padding-top: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.footer-bottom p { font-size: .78rem; color: var(--muted); }
+.footer-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+.footer-tag { font-size: .7rem; padding: 3px 10px; border-radius: 10px; background: var(--card); border: 1px solid var(--border); color: var(--muted); }
+
+/* ===================== ANIMATIONS ===================== */
+@keyframes fadeDown { from { opacity:0; transform:translateY(-16px);} to { opacity:1; transform:translateY(0);} }
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ===================== PROGRESS BAR COLORS ===================== */
+.pb-purple { background: linear-gradient(90deg,var(--accent),#a78bfa); }
+.pb-teal   { background: linear-gradient(90deg,var(--accent2),var(--blue)); }
+.pb-gold   { background: linear-gradient(90deg,var(--gold),#f97316); }
+.pb-pink   { background: linear-gradient(90deg,var(--pink),#a855f7); }
+
+/* ===================== RESPONSIVE ===================== */
+@media (max-width: 900px) {
+  .nav-links, .nav-cta { display: none; }
+  .nav-mobile-toggle { display: block; }
+  .about-inner { grid-template-columns: 1fr; }
+  .footer-top { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 600px) {
+  .hero-stats { gap: 24px; }
+  .footer-top { grid-template-columns: 1fr; }
+  .about-right { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== NAV ==================== -->
+<nav id="nav">
+  <a href="#" class="nav-logo">
+    <div class="logo-icon">🌳</div>
+    <span class="logo-text">立涛 AI Edu Lab</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#projects">项目</a></li>
+    <li><a href="#routes">入口</a></li>
+    <li><a href="#courses">课程</a></li>
+    <li><a href="#ai-tools">工具</a></li>
+    <li><a href="#research">研究</a></li>
+    <li><a href="#blog">博客</a></li>
+    <li><a href="#about">关于</a></li>
+  </ul>
+  <a href="#projects" class="nav-cta">探索项目 →</a>
+  <button class="nav-mobile-toggle" id="menuToggle">☰</button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#projects">📦 项目</a>
+  <a href="#routes">🗂️ 入口</a>
+  <a href="#courses">📚 课程</a>
+  <a href="#ai-tools">🤖 工具</a>
+  <a href="#research">🔬 研究</a>
+  <a href="#blog">✍️ 博客</a>
+  <a href="#about">👤 关于</a>
+</div>
+
+<!-- ==================== HERO ==================== -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-badge">🚀 AI 教育生态构建者 · 持续进化中</div>
+    <h1>
+      <span class="line1">立涛 AI 教育实验室</span>
+      <span class="line2">构建下一代 AI 教育生态</span>
+    </h1>
+    <p class="hero-desc">
+      将三年 AI 技术实践沉淀为真正长期有价值的作品体系——<br>
+      互动课程 · 智能工具 · 编程游戏 · 教育研究，统一平台，开放展示。
+    </p>
+    <div class="hero-btns">
+      <a href="#projects" class="btn-primary">🗂️ 浏览所有项目</a>
+      <a href="#courses" class="btn-ghost">📚 查看课程体系</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">10+</div><div class="stat-label">开发项目</div></div>
+      <div class="stat"><div class="stat-num">7</div><div class="stat-label">核心作品</div></div>
+      <div class="stat"><div class="stat-num">3+</div><div class="stat-label">年 AI 实践</div></div>
+      <div class="stat"><div class="stat-num">300h+</div><div class="stat-label">教学时长</div></div>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <span>向下探索</span>
+    <div class="scroll-dot"></div>
+  </div>
+</section>
+
+<!-- ==================== PROJECTS ==================== -->
+<section id="projects">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-tag">📦 Projects</div>
+      <h2 class="section-title">全部项目</h2>
+      <p class="section-subtitle">从 AI 平台到互动游戏，每个项目都是一个具体的教育问题解决方案</p>
+    </div>
+    <div class="projects-grid">
+
+      <!-- P001 AI助学助手 -->
+      <div class="project-card c-ai reveal">
+        <div class="card-top">
+          <div class="card-icon icon-ai">🤖</div>
+          <div class="card-meta"><div class="card-pid">P001</div><div class="card-core">⭐ 核心</div></div>
+        </div>
+        <div class="card-body">
+          <h3>AI 助学助手</h3>
+          <p>不直接给答案的启发式 AI 学习系统，引导学生自主思考与探索</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag tag-yellow">开发中</span>
+          <span class="tag">HTML/JS</span>
+          <span class="tag">Flask</span>
+          <span class="tag">AI API</span>
+        </div>
+        <div class="card-score">
+          <div class="score-bar-item"><label><span>展示</span><span>10</span></label><div class="bar-track"><div class="bar-fill pb-purple" style="width:100%"></div></div></div>
+          <div class="score-bar-item"><label><span>商业</span><span>10</span></label><div class="bar-track"><div class="bar-fill pb-teal" style="width:100%"></div></div></div>
+          <div class="score-bar-item"><label><span>完成</span><span>7</span></label><div class="bar-track"><div class="bar-fill pb-gold" style="width:70%"></div></div></div>
+        </div>
+        <div class="card-next">📌 <strong>统一UI并上线演示版</strong></div>
+        <div class="card-footer"><span class="card-dir">projects/P001</span><div class="card-arrow">→</div></div>
+      </div>
+
+      <!-- P002 在线考试系统 -->
+      <div class="project-card c-exam reveal">
+        <div class="card-top">
+          <div class="card-icon icon-exam">📝</div>
+          <div class="card-meta"><div class="card-pid">P002</div><div class="card-core">⭐ 核心</div></div>
+        </div>
+        <div class="card-body">
+          <h3>在线考试系统</h3>
+          <p>支持多题型与自动判卷的在线考试平台，可一键生成试卷</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag tag-green">可运行</span>
+          <span class="tag">HTML/JS</span>
+          <span class="tag">Flask</span>
+        </div>
+        <div class="card-score">
+          <div class="score-bar-item"><label><span>展示</span><span>8</span></label><div class="bar-track"><div class="bar-fill pb-purple" style="width:80%"></div></div></div>
+          <div class="score-bar-item"><label><span>商业</span><span>8</span></label><div class="bar-track"><div class="bar-fill pb-teal" style="width:80%"></div></div></div>
+          <div class="score-bar-item"><label><span>完成</span><span>8</span></label><div class="bar-track"><div class="bar-fill pb-gold" style="width:80%"></div></div></div>
+        </div>
+        <div class="card-next">📌 <strong>增加AI讲题与错题分析</strong></div>
+        <div class="card-footer"><span class="card-dir">exams/P002</span><div class="card-arrow">→</div></div>
+      </div>
+
+      <!-- P003 Python闯关 -->
+      <div class="project-card c-game reveal">
+        <div class="card-top">
+          <div class="card-icon icon-game">🐍</div>
+          <div class="card-meta"><div class="card-pid">P003</div><div class="card-core">⭐ 核心</div></div>
+        </div>
+        <div class="card-body">
+          <h3>Python 闯关平台</h3>
+          <p>游戏化 Python 编程学习平台，关卡闯关 + 即时反馈 + 积分排行</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag tag-yellow">开发中</span>
+          <span class="tag">HTML/JS</span>
+          <span class="tag">游戏化</span>
+        </div>
+        <div class="card-score">
+          <div class="score-bar-item"><label><span>展示</span><span>9</span></label><div class="bar-track"><div class="bar-fill pb-purple" style="width:90%"></div></div></div>
+          <div class="score-bar-item"><label><span>商业</span><span>8</span></label><div class="bar-track"><div class="bar-fill pb-teal" style="width:80%"></div></div></div>
+          <div class="score-bar-item"><label><span>完成</span><span>7</span></label><div class="bar-track"><div class="bar-fill pb-gold" style="width:70%"></div></div></div>
+        </div>
+        <div class="card-next">📌 <strong>增加排行榜与学习进度</strong></div>
+        <div class="card-footer"><span class="card-dir">games/P003</span><div class="card-arrow">→</div></div>
+      </div>
+
+      <!-- P004 QuizGPT -->
+      <div class="project-card c-ai reveal">
+        <div class="card-top">
+          <div class="card-icon icon-ai">✨</div>
+          <div class="card-meta"><div class="card-pid">P004</div><div class="card-core">⭐ 核心</div></div>
+        </div>
+        <div class="card-body">
+          <h3>QuizGPT</h3>
+          <p>AI 驱动的互动测验平台，自动生成题目、即时评分、智能讲解</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag tag-yellow">开发中</span>
+          <span class="tag">HTML/JS</span>
+          <span class="tag">AI API</span>
+        </div>
+        <div class="card-score">
+          <div class="score-bar-item"><label><span>展示</span><span>8</span></label><div class="bar-track"><div class="bar-fill pb-purple" style="width:80%"></div></div></div>
+          <div class="score-bar-item"><label><span>商业</span><span>9</span></label><div class="bar-track"><div class="bar-fill pb-teal" style="width:90%"></div></div></div>
+          <div class="score-bar-item"><label><span>完成</span><span>6</span></label><div class="bar-track"><div class="bar-fill pb-gold" style="width:60%"></div></div></div>
+        </div>
+        <div class="card-next">📌 <strong>统一题库结构</strong></div>
+        <div class="card-footer"><span class="card-dir">projects/P004</span><div class="card-arrow">→</div></div>
+      </div>
+
+      <!-- P005 网络工程师刷题 -->
+      <div class="project-card c-exam reveal">
+        <div class="card-top">
+          <div class="card-icon icon-exam">🌐</div>
+          <div class="card-meta"><div class="card-pid">P005</div><div class="card-core">⭐ 核心</div></div>
+        </div>
+        <div class="card-body">
+          <h3>网络工程师刷题系统</h3>
+          <p>软考网络工程师可视化刷题平台，含数据图表分析与进度追踪</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag tag-green">可运行</span>
+          <span class="tag">HTML/JS</span>
+          <span class="tag">软考</span>
+        </div>
+        <div class="card-score">
+          <div class="score-bar-item"><label><span>展示</span><span>8</span></label><div class="bar-track"><div class="bar-fill pb-purple" style="width:80%"></div></div></div>
+          <div class="score-bar-item"><label><span>商业</span><span>7</span></label><div class="bar-track"><div class="bar-fill pb-teal" style="width:70%"></div></div></div>
+          <div class="score-bar-item"><label><span>完成</span><span>8</span></label><div class="bar-track"><div class="bar-fill pb-gold" style="width:80%"></div></div></div>
+        </div>
+        <div class="card-next">📌 <strong>加入下午案例训练</strong></div>
+        <div class="card-footer"><span class="card-dir">exams/P005</span><div class="card-arrow">→</div></div>
+      </div>
+
+      <!-- P006 AIGC课程 -->
+      <div class="project-card c-course reveal">
+        <div class="card-top">
+          <div class="card-icon icon-course">🎓</div>
+          <div class="card-meta"><div class="card-pid">P006</div><div class="card-core">⭐ 核心</div></div>
+        </div>
+        <div class="card-body">
+          <h3>AIGC 互动课程平台</h3>
+          <p>面向高中生与职业学员的 AIGC 互动学习平台，知识 + 练习 + 测验</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag tag-yellow">开发中</span>
+          <span class="tag">HTML/JS</span>
+          <span class="tag">AI API</span>
+          <span class="tag">AIGC</span>
+        </div>
+        <div class="card-score">
+          <div class="score-bar-item"><label><span>展示</span><span>10</span></label><div class="bar-track"><div class="bar-fill pb-purple" style="width:100%"></div></div></div>
+          <div class="score-bar-item"><label><span>商业</span><span>10</span></label><div class="bar-track"><div class="bar-fill pb-teal" style="width:100%"></div></div></div>
+          <div class="score-bar-item"><label><span>完成</span><span>6</span></label><div class="bar-track"><div class="bar-fill pb-gold" style="width:60%"></div></div></div>
+        </div>
+        <div class="card-next">📌 <strong>统一课程模板</strong></div>
+        <div class="card-footer"><span class="card-dir">courses/P006</span><div class="card-arrow">→</div></div>
+      </div>
+
+      <!-- P007 河南文化科研 -->
+      <div class="project-card c-research reveal">
+        <div class="card-top">
+          <div class="card-icon icon-research">🏛️</div>
+          <div class="card-meta"><div class="card-pid">P007</div><span style="font-size:.68rem;color:var(--muted);">普通</span></div>
+        </div>
+        <div class="card-body">
+          <h3>河南文化科研平台</h3>
+          <p>AIGC 辅助河南文化课题研究平台，探索 AI 在人文科研中的应用</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag tag-red">概念版</span>
+          <span class="tag">HTML/JS</span>
+          <span class="tag">AI科研</span>
+        </div>
+        <div class="card-score">
+          <div class="score-bar-item"><label><span>展示</span><span>8</span></label><div class="bar-track"><div class="bar-fill pb-purple" style="width:80%"></div></div></div>
+          <div class="score-bar-item"><label><span>商业</span><span>8</span></label><div class="bar-track"><div class="bar-fill pb-teal" style="width:80%"></div></div></div>
+          <div class="score-bar-item"><label><span>完成</span><span>4</span></label><div class="bar-track"><div class="bar-fill pb-gold" style="width:40%"></div></div></div>
+        </div>
+        <div class="card-next">📌 <strong>先完成最小可运行版</strong></div>
+        <div class="card-footer"><span class="card-dir">research/P007</span><div class="card-arrow">→</div></div>
+      </div>
+
+      <!-- P008 Java互动 -->
+      <div class="project-card c-game reveal">
+        <div class="card-top">
+          <div class="card-icon icon-game">☕</div>
+          <div class="card-meta"><div class="card-pid">P008</div><span style="font-size:.68rem;color:var(--muted);">普通</span></div>
+        </div>
+        <div class="card-body">
+          <h3>Java 互动教学系统</h3>
+          <p>交互式 Java 基础教学平台，动画演示 + 练习 + 测验三段式结构</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag tag-yellow">开发中</span>
+          <span class="tag">HTML/JS</span>
+          <span class="tag">动画</span>
+        </div>
+        <div class="card-score">
+          <div class="score-bar-item"><label><span>展示</span><span>7</span></label><div class="bar-track"><div class="bar-fill pb-purple" style="width:70%"></div></div></div>
+          <div class="score-bar-item"><label><span>商业</span><span>7</span></label><div class="bar-track"><div class="bar-fill pb-teal" style="width:70%"></div></div></div>
+          <div class="score-bar-item"><label><span>完成</span><span>6</span></label><div class="bar-track"><div class="bar-fill pb-gold" style="width:60%"></div></div></div>
+        </div>
+        <div class="card-next">📌 <strong>统一风格并补充动画</strong></div>
+        <div class="card-footer"><span class="card-dir">games/P008</span><div class="card-arrow">→</div></div>
+      </div>
+
+      <!-- P009 C语言 -->
+      <div class="project-card c-game reveal">
+        <div class="card-top">
+          <div class="card-icon icon-game">⚡</div>
+          <div class="card-meta"><div class="card-pid">P009</div><span style="font-size:.68rem;color:var(--muted);">普通</span></div>
+        </div>
+        <div class="card-body">
+          <h3>C 语言互动学习平台</h3>
+          <p>通过互动小项目学习 C 语言，将抽象概念转化为可操控的可视化体验</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag tag-yellow">开发中</span>
+          <span class="tag">HTML/JS</span>
+          <span class="tag">C语言</span>
+        </div>
+        <div class="card-score">
+          <div class="score-bar-item"><label><span>展示</span><span>7</span></label><div class="bar-track"><div class="bar-fill pb-purple" style="width:70%"></div></div></div>
+          <div class="score-bar-item"><label><span>商业</span><span>6</span></label><div class="bar-track"><div class="bar-fill pb-teal" style="width:60%"></div></div></div>
+          <div class="score-bar-item"><label><span>完成</span><span>5</span></label><div class="bar-track"><div class="bar-fill pb-gold" style="width:50%"></div></div></div>
+        </div>
+        <div class="card-next">📌 <strong>增加练习与关卡</strong></div>
+        <div class="card-footer"><span class="card-dir">games/P009</span><div class="card-arrow">→</div></div>
+      </div>
+
+      <!-- P010 官网 -->
+      <div class="project-card c-brand reveal" style="border-color:rgba(244,63,94,.25);">
+        <div class="card-top">
+          <div class="card-icon icon-brand">🌐</div>
+          <div class="card-meta"><div class="card-pid">P010</div><div class="card-core">⭐ 核心</div></div>
+        </div>
+        <div class="card-body">
+          <h3>个人官网 <span style="font-size:.75rem;color:var(--accent);font-weight:400;">← 你现在在这里</span></h3>
+          <p>AI 教育项目统一展示平台，所有作品的中央入口与品牌门户</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag tag-yellow">建设中</span>
+          <span class="tag">HTML/JS</span>
+          <span class="tag">品牌</span>
+        </div>
+        <div class="card-score">
+          <div class="score-bar-item"><label><span>展示</span><span>10</span></label><div class="bar-track"><div class="bar-fill pb-purple" style="width:100%"></div></div></div>
+          <div class="score-bar-item"><label><span>商业</span><span>10</span></label><div class="bar-track"><div class="bar-fill pb-teal" style="width:100%"></div></div></div>
+          <div class="score-bar-item"><label><span>完成</span><span>2</span></label><div class="bar-track"><div class="bar-fill pb-gold" style="width:20%"></div></div></div>
+        </div>
+        <div class="card-next">📌 <strong>先完成首页与项目展示 ← 正在进行</strong></div>
+        <div class="card-footer"><span class="card-dir">website/P010</span><div class="card-arrow">→</div></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ==================== ROUTES ==================== -->
+<section id="routes">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-tag">🗂️ Navigation</div>
+      <h2 class="section-title">平台导航入口</h2>
+      <p class="section-subtitle">所有内容模块统一挂载，按需直达</p>
+    </div>
+    <div class="routes-grid">
+      <a href="#projects" class="route-card reveal">
+        <div class="route-icon">📦</div>
+        <div class="route-info">
+          <div class="route-path">/projects</div>
+          <div class="route-label">AI 教育项目</div>
+          <div class="route-desc">AI助学、QuizGPT等核心平台</div>
+        </div>
+        <div class="route-count">2 项</div>
+      </a>
+      <a href="#projects" class="route-card reveal">
+        <div class="route-icon">🕹️</div>
+        <div class="route-info">
+          <div class="route-path">/games</div>
+          <div class="route-label">互动编程游戏</div>
+          <div class="route-desc">Python/Java/C语言闯关</div>
+        </div>
+        <div class="route-count">3 项</div>
+      </a>
+      <a href="#courses" class="route-card reveal">
+        <div class="route-icon">📚</div>
+        <div class="route-info">
+          <div class="route-path">/courses</div>
+          <div class="route-label">AI 课程体系</div>
+          <div class="route-desc">AIGC/AI编程/AI办公</div>
+        </div>
+        <div class="route-count">4 系列</div>
+      </a>
+      <a href="#ai-tools" class="route-card reveal">
+        <div class="route-icon">🤖</div>
+        <div class="route-info">
+          <div class="route-path">/ai-tools</div>
+          <div class="route-label">AI 教育工具</div>
+          <div class="route-desc">QuizGPT、智能考试、学习分析</div>
+        </div>
+        <div class="route-count">4 工具</div>
+      </a>
+      <a href="#projects" class="route-card reveal">
+        <div class="route-icon">📋</div>
+        <div class="route-info">
+          <div class="route-path">/exams</div>
+          <div class="route-label">考试刷题系统</div>
+          <div class="route-desc">在线考试、软考刷题</div>
+        </div>
+        <div class="route-count">2 项</div>
+      </a>
+      <a href="#blog" class="route-card reveal">
+        <div class="route-icon">✍️</div>
+        <div class="route-info">
+          <div class="route-path">/blog</div>
+          <div class="route-label">教育博客</div>
+          <div class="route-desc">AI教学心得、技术分享</div>
+        </div>
+        <div class="route-count">更新中</div>
+      </a>
+      <a href="#research" class="route-card reveal">
+        <div class="route-icon">🔬</div>
+        <div class="route-info">
+          <div class="route-path">/research</div>
+          <div class="route-label">教育研究</div>
+          <div class="route-desc">AI教育前沿探索与报告</div>
+        </div>
+        <div class="route-count">1 项</div>
+      </a>
+      <a href="#about" class="route-card reveal">
+        <div class="route-icon">👤</div>
+        <div class="route-info">
+          <div class="route-path">/about</div>
+          <div class="route-label">关于我</div>
+          <div class="route-desc">AI教育构建者 · 赵立涛</div>
+        </div>
+        <div class="route-count"></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== COURSES ==================== -->
+<section id="courses">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-tag">📚 Courses</div>
+      <h2 class="section-title">AI 课程体系</h2>
+      <p class="section-subtitle">系统化、模块化、可落地的 AI 教育课程，覆盖四大方向</p>
+    </div>
+    <div class="courses-grid">
+      <div class="course-card reveal">
+        <div class="course-header">
+          <div class="course-emoji">🎨</div>
+          <h3>AIGC 应用入门</h3>
+          <p>面向零基础社会学员，200-300学时，就业导向</p>
+        </div>
+        <div class="course-body">
+          <ul class="course-items">
+            <li>AI工具全景认知</li>
+            <li>图像生成与提示词工程</li>
+            <li>视频创作与AIGC内容生产</li>
+            <li>AI辅助办公实战</li>
+            <li>就业与创业方向规划</li>
+          </ul>
+          <span class="course-badge">三个月精品课</span>
+        </div>
+      </div>
+      <div class="course-card reveal">
+        <div class="course-header">
+          <div class="course-emoji">💻</div>
+          <h3>AI 编程实战</h3>
+          <p>以实际项目驱动，掌握 AI 辅助编程全流程</p>
+        </div>
+        <div class="course-body">
+          <ul class="course-items">
+            <li>Python 基础与 AI 生态</li>
+            <li>AI 辅助代码生成</li>
+            <li>Web 应用快速搭建</li>
+            <li>API 接入与智能体开发</li>
+            <li>实战项目：AI 小工具</li>
+          </ul>
+          <span class="course-badge">项目驱动</span>
+        </div>
+      </div>
+      <div class="course-card reveal">
+        <div class="course-header">
+          <div class="course-emoji">🔬</div>
+          <h3>AI 科研助手</h3>
+          <p>AI 赋能学术研究与课题申报的系统方法</p>
+        </div>
+        <div class="course-body">
+          <ul class="course-items">
+            <li>AI 文献检索与综述</li>
+            <li>数据分析与可视化</li>
+            <li>AI 辅助论文写作</li>
+            <li>课题设计与申报</li>
+            <li>研究伦理与规范</li>
+          </ul>
+          <span class="course-badge">教师专项</span>
+        </div>
+      </div>
+      <div class="course-card reveal">
+        <div class="course-header">
+          <div class="course-emoji">📊</div>
+          <h3>AI 智能办公</h3>
+          <p>从重复劳动中解放，用 AI 提升 10 倍效率</p>
+        </div>
+        <div class="course-body">
+          <ul class="course-items">
+            <li>AI 写作与文案生成</li>
+            <li>Excel + AI 数据分析</li>
+            <li>PPT 智能生成与美化</li>
+            <li>会议纪要与流程自动化</li>
+            <li>AI 工作流搭建</li>
+          </ul>
+          <span class="course-badge">职场必备</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== AI TOOLS ==================== -->
+<section id="ai-tools">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-tag">🤖 AI Tools</div>
+      <h2 class="section-title">AI 教育工具箱</h2>
+      <p class="section-subtitle">自主研发的教育工具，让 AI 真正服务于教学场景</p>
+    </div>
+    <div class="tools-grid">
+      <div class="tool-card reveal">
+        <div class="tool-icon">✨</div>
+        <h3>QuizGPT</h3>
+        <p>AI 自动生成互动测验，支持多题型与即时讲解</p>
+        <div class="tool-status st-dev">开发中</div>
+      </div>
+      <div class="tool-card reveal">
+        <div class="tool-icon">📝</div>
+        <h3>智能考试系统</h3>
+        <p>多题型在线考试 + 自动判卷 + 成绩分析报告</p>
+        <div class="tool-status st-live">可运行</div>
+      </div>
+      <div class="tool-card reveal">
+        <div class="tool-icon">🔍</div>
+        <h3>错题分析系统</h3>
+        <p>AI 识别薄弱知识点，个性化推荐复习路径</p>
+        <div class="tool-status st-plan">规划中</div>
+      </div>
+      <div class="tool-card reveal">
+        <div class="tool-icon">📊</div>
+        <h3>AI 学习分析</h3>
+        <p>学生行为数据可视化，教师精准掌握学情</p>
+        <div class="tool-status st-plan">规划中</div>
+      </div>
+      <div class="tool-card reveal">
+        <div class="tool-icon">🤖</div>
+        <h3>苏格拉底学习引擎</h3>
+        <p>启发式对话引导，不给答案只问问题的 AI 导师</p>
+        <div class="tool-status st-dev">开发中</div>
+      </div>
+      <div class="tool-card reveal">
+        <div class="tool-icon">📱</div>
+        <h3>AI 助学小程序</h3>
+        <p>微信小程序 · 拍照上传 + OCR + AI启发式对话</p>
+        <div class="tool-status st-dev">开发中</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== RESEARCH ==================== -->
+<section id="research">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-tag">🔬 Research</div>
+      <h2 class="section-title">教育研究与探索</h2>
+      <p class="section-subtitle">在实践中提炼方法论，在研究中寻找教育的新可能</p>
+    </div>
+    <div class="research-grid">
+      <div class="research-card reveal">
+        <div class="research-num">R-001</div>
+        <h3>AIGC 在职业教育中的应用研究</h3>
+        <p>探索 AIGC 工具如何重构职业院校教学流程，提升学生就业竞争力，构建新型 AI 教学范式。</p>
+        <div class="research-tags"><span class="tag">职业教育</span><span class="tag">AIGC</span><span class="tag">教学设计</span></div>
+      </div>
+      <div class="research-card reveal">
+        <div class="research-num">R-002</div>
+        <h3>游戏化学习对编程教学效果的影响</h3>
+        <p>基于 Python/Java 闯关平台的真实数据，分析游戏化机制对学习动机、完成率与知识保留的影响。</p>
+        <div class="research-tags"><span class="tag">游戏化</span><span class="tag">编程教育</span><span class="tag">学习动机</span></div>
+      </div>
+      <div class="research-card reveal">
+        <div class="research-num">R-003</div>
+        <h3>河南文化 AIGC 创作辅助平台</h3>
+        <p>用 AI 赋能地方文化研究与传播，探索 AIGC 在人文社科领域课题研究中的方法论边界。</p>
+        <div class="research-tags"><span class="tag">河南文化</span><span class="tag">AIGC</span><span class="tag">人文科研</span></div>
+      </div>
+      <div class="research-card reveal">
+        <div class="research-num">R-004</div>
+        <h3>苏格拉底式 AI 教学模型</h3>
+        <p>构建"不给答案、只问问题"的 AI 导师模型，研究启发式对话对深层学习的促进机制。</p>
+        <div class="research-tags"><span class="tag">苏格拉底</span><span class="tag">AI导师</span><span class="tag">深层学习</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== BLOG ==================== -->
+<section id="blog">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-tag">✍️ Blog</div>
+      <h2 class="section-title">教育博客</h2>
+      <p class="section-subtitle">记录 AI 教育的思考、实践与感悟</p>
+    </div>
+    <div class="blog-grid">
+      <div class="blog-card reveal" onclick="location.href='blog/posts/2026-05-17-why-not-alone.html'">
+        <div class="blog-date">2026-05-17 · 首发</div>
+        <h3>三年 AI 教学，我为什么决定不再单打独斗</h3>
+        <p>三年的碎片化实践让我意识到一个残酷的事实：没有系统、没有品牌、没有沉淀的技术积累，终将消散在时间里……</p>
+        <div class="blog-tags"><span class="tag">随想</span><span class="tag">AI教育</span><span class="tag">战略</span></div>
+        <div class="blog-read">阅读全文 →</div>
+      </div>
+      <div class="blog-card reveal">
+        <div class="blog-date">即将发布</div>
+        <h3>苏格拉底遇见 AI：为什么不直接给答案才是最好的教育</h3>
+        <p>启发式教学并不是新概念，但当 AI 可以无限耐心地追问时，它的价值被放大了 100 倍……</p>
+        <div class="blog-tags"><span class="tag">苏格拉底</span><span class="tag">AI导师</span><span class="tag">教育哲学</span></div>
+        <div class="blog-read" style="color:var(--muted);">敬请期待</div>
+      </div>
+      <div class="blog-card reveal">
+        <div class="blog-date">即将发布</div>
+        <h3>用游戏化重新设计编程课：从 0 到第一个闯关关卡的全过程</h3>
+        <p>如何把一个抽象的 Python 知识点，变成一个让学生停不下来的游戏关卡？设计思路完整复盘……</p>
+        <div class="blog-tags"><span class="tag">游戏化</span><span class="tag">Python</span><span class="tag">教学设计</span></div>
+        <div class="blog-read" style="color:var(--muted);">敬请期待</div>
+      </div>
+      <div style="text-align:center;margin-top:36px" class="reveal">
+        <a href="blog/index.html" class="view-more">📖 查看全部博客 →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== ABOUT ==================== -->
+<section id="about">
+  <div class="about-inner section-inner">
+    <div class="about-left reveal">
+      <div class="section-tag" style="margin-bottom:20px;">👤 About</div>
+      <h2>在构建<br><span>AI 教育生态</span><br>的人</h2>
+      <p>赵立涛，河南机电职业学院 Java 教师，AI 教育实践者。</p>
+      <p>从 2023 年开始系统学习和应用 AI 技术，在课堂、在项目、在研究中不断探索 AI 与教育的边界。相信技术最终应该服务于人的成长，而不是替代人的思考。</p>
+      <p>现在，把三年积累整合为一套完整的 AI 教育生态，让每一个有学习意愿的人都能用上好用的 AI 学习工具。</p>
+      <div class="about-skills">
+        <span class="skill-chip">AI 教育设计</span>
+        <span class="skill-chip">Python / Java</span>
+        <span class="skill-chip">HTML/CSS/JS</span>
+        <span class="skill-chip">FastAPI</span>
+        <span class="skill-chip">游戏化教学</span>
+        <span class="skill-chip">AIGC 应用</span>
+        <span class="skill-chip">课程开发</span>
+        <span class="skill-chip">Excel 数据分析</span>
+      </div>
+    </div>
+    <div class="about-right reveal">
+      <div class="about-card">
+        <div class="num">10+</div>
+        <div class="label">开发项目</div>
+      </div>
+      <div class="about-card">
+        <div class="num">3+</div>
+        <div class="label">年 AI 实践</div>
+      </div>
+      <div class="about-card">
+        <div class="num">300h</div>
+        <div class="label">课程设计</div>
+      </div>
+      <div class="about-card">
+        <div class="num">7</div>
+        <div class="label">核心作品</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FOOTER ==================== -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="nav-logo" style="margin-bottom:12px;">
+          <div class="logo-icon" style="width:32px;height:32px;font-size:16px;">🌳</div>
+          <span class="logo-text" style="font-size:1rem;">立涛 AI Edu Lab</span>
+        </div>
+        <p>在构建 AI 教育生态的人。将三年 AI 技术实践沉淀为真正长期有价值的作品体系，让 AI 教育触手可及。</p>
+      </div>
+      <div class="footer-col">
+        <h4>项目</h4>
+        <ul>
+          <li><a href="#projects">AI 助学助手</a></li>
+          <li><a href="#projects">在线考试系统</a></li>
+          <li><a href="#projects">Python 闯关</a></li>
+          <li><a href="#projects">QuizGPT</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>课程</h4>
+        <ul>
+          <li><a href="#courses">AIGC 入门</a></li>
+          <li><a href="#courses">AI 编程</a></li>
+          <li><a href="#courses">AI 科研</a></li>
+          <li><a href="#courses">AI 办公</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>其他</h4>
+        <ul>
+          <li><a href="#ai-tools">AI 工具</a></li>
+          <li><a href="#research">教育研究</a></li>
+          <li><a href="#blog">博客</a></li>
+          <li><a href="#about">关于我</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 立涛 AI Edu Lab · 构建 AI 教育生态 · Powered by 赵立涛</p>
+      <div class="footer-tags">
+        <span class="footer-tag">🌳 AI教育</span>
+        <span class="footer-tag">🚀 持续进化</span>
+        <span class="footer-tag">📦 10+ 项目</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ---- Mobile menu ----
+document.getElementById('menuToggle').addEventListener('click', () => {
+  document.getElementById('mobileMenu').classList.toggle('open');
+});
+
+// ---- Nav scroll effect ----
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('nav');
+  nav.style.background = window.scrollY > 40
+    ? 'rgba(8,9,14,.97)'
+    : 'rgba(8,9,14,.85)';
+});
+
+// ---- Scroll reveal ----
+const revealEls = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      // stagger children in same parent
+      const siblings = [...e.target.parentElement.querySelectorAll('.reveal:not(.visible)')];
+      const idx = siblings.indexOf(e.target);
+      setTimeout(() => {
+        e.target.classList.add('visible');
+      }, Math.min(idx * 80, 320));
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+revealEls.forEach(el => observer.observe(el));
+
+// ---- Active nav link highlight ----
+const sections = document.querySelectorAll('section[id], footer');
+const navLinks = document.querySelectorAll('.nav-links a');
+const sectionObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(a => {
+        a.style.color = a.getAttribute('href') === '#' + e.target.id
+          ? 'var(--text)' : '';
+      });
+    }
+  });
+}, { threshold: 0.4 });
+document.querySelectorAll('section[id]').forEach(s => sectionObserver.observe(s));
+</script>
+</body>
+</html>
