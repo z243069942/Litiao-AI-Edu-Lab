@@ -197,6 +197,168 @@ section { padding: clamp(60px,8vw,100px) clamp(16px,5vw,60px); }
 .section-title { font-size: clamp(1.7rem,4vw,2.4rem); font-weight: 800; margin-bottom: 10px; }
 .section-subtitle { color: var(--muted2); font-size: 1.05rem; max-width: 560px; }
 
+/* ===================== AI DEMO CARD ==================== */
+#ai-demo {
+  background: var(--bg2);
+  padding: clamp(60px, 8vw, 100px) clamp(16px, 5vw, 60px);
+}
+.demo-section-inner {
+  max-width: 900px;
+  margin: 0 auto;
+}
+.demo-eyebrow {
+  text-align: center;
+  margin-bottom: 12px;
+}
+.demo-label {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: .75rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--accent2);
+  background: rgba(0,212,170,.08);
+  padding: 5px 14px; border-radius: 20px;
+  border: 1px solid rgba(0,212,170,.2);
+}
+.demo-title {
+  text-align: center;
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 800; margin-bottom: 10px;
+}
+.demo-title span {
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.demo-sub {
+  text-align: center; color: var(--muted2); font-size: 1rem;
+  max-width: 520px; margin: 0 auto 36px;
+}
+
+/* Topic selector */
+.demo-topics {
+  display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+.topic-btn {
+  padding: 10px 22px; border-radius: 24px;
+  background: var(--card); border: 1px solid var(--border);
+  color: var(--muted2); font-size: .88rem; font-weight: 500;
+  cursor: pointer; transition: all .2s;
+  display: flex; align-items: center; gap: 8px;
+}
+.topic-btn:hover { border-color: var(--accent); color: var(--text); background: rgba(108,99,255,.08); }
+.topic-btn.active {
+  background: linear-gradient(135deg, var(--accent), #8b5cf6);
+  border-color: transparent; color: #fff; box-shadow: 0 4px 16px rgba(108,99,255,.35);
+}
+
+/* Chat window */
+.demo-window {
+  background: var(--card);
+  border: 1px solid var(--border2);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 8px 40px rgba(0,0,0,.4), 0 0 0 1px rgba(108,99,255,.08);
+  max-width: 680px; margin: 0 auto;
+}
+.demo-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 20px;
+  background: var(--card2);
+  border-bottom: 1px solid var(--border);
+}
+.demo-dots { display: flex; gap: 6px; }
+.demo-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+}
+.demo-dot:nth-child(1){background:#f87171}
+.demo-dot:nth-child(2){background:#fbbf24}
+.demo-dot:nth-child(3){background:#4ade80}
+.demo-header-label {
+  flex: 1; text-align: center; font-size: .78rem; color: var(--muted);
+}
+.demo-badge {
+  font-size: .65rem; padding: 2px 8px; border-radius: 8px;
+  background: rgba(0,212,170,.1); color: var(--accent2);
+  border: 1px solid rgba(0,212,170,.2);
+}
+
+/* Chat messages */
+.demo-chat {
+  min-height: 300px; max-height: 380px; overflow-y: auto;
+  padding: 20px;
+  display: flex; flex-direction: column; gap: 14px;
+  scroll-behavior: smooth;
+}
+.chat-bubble {
+  max-width: 80%;
+  padding: 12px 16px;
+  border-radius: 16px;
+  font-size: .88rem; line-height: 1.7;
+  animation: bubbleIn .35s ease both;
+}
+@keyframes bubbleIn {
+  from { opacity: 0; transform: translateY(8px) scale(.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.chat-bubble.user {
+  align-self: flex-end;
+  background: linear-gradient(135deg, var(--accent), #8b5cf6);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+.chat-bubble.ai {
+  align-self: flex-start;
+  background: var(--card2);
+  border: 1px solid var(--border2);
+  color: var(--text);
+  border-bottom-left-radius: 4px;
+}
+.chat-bubble.ai .speaker {
+  font-size: .68rem; color: var(--accent2);
+  font-weight: 600; margin-bottom: 6px;
+  display: flex; align-items: center; gap: 4px;
+}
+.chat-typing {
+  align-self: flex-start;
+  background: var(--card2); border: 1px solid var(--border2);
+  padding: 12px 16px; border-radius: 16px;
+  border-bottom-left-radius: 4px;
+  display: flex; align-items: center; gap: 6px;
+  font-size: .8rem; color: var(--muted);
+}
+.typing-dots { display: flex; gap: 3px; }
+.typing-dots span {
+  width: 5px; height: 5px; background: var(--accent);
+  border-radius: 50%; animation: typingBounce 1.2s ease infinite;
+}
+.typing-dots span:nth-child(2){animation-delay:.2s}
+.typing-dots span:nth-child(3){animation-delay:.4s}
+@keyframes typingBounce {
+  0%,60%,100%{transform:translateY(0);opacity:.4}
+  30%{transform:translateY(-5px);opacity:1}
+}
+
+/* Chat footer */
+.demo-footer {
+  padding: 12px 20px;
+  background: var(--card2); border-top: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+}
+.demo-input-hint {
+  flex: 1; font-size: .78rem; color: var(--muted);
+  background: var(--card); border: 1px solid var(--border);
+  padding: 8px 14px; border-radius: 20px;
+}
+.demo-cta {
+  padding: 8px 18px; border-radius: 20px;
+  background: linear-gradient(135deg, var(--accent2), var(--blue));
+  color: #fff; font-size: .78rem; font-weight: 600;
+  cursor: pointer; border: none;
+  transition: all .2s; text-decoration: none;
+  display: inline-flex; align-items: center; gap: 6px;
+  box-shadow: 0 4px 12px rgba(0,212,170,.3);
+}
+.demo-cta:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,212,170,.4); }
+
 /* ===================== PROJECTS ===================== */
 #projects { background: var(--bg2); }
 .projects-grid {
@@ -438,7 +600,7 @@ footer {
     <li><a href="#blog">博客</a></li>
     <li><a href="#about">关于</a></li>
   </ul>
-  <a href="#projects" class="nav-cta">探索项目 →</a>
+  <a href="#ai-demo" class="nav-cta">⚡ 立即体验 →</a>
   <button class="nav-mobile-toggle" id="menuToggle">☰</button>
 </nav>
 <div class="mobile-menu" id="mobileMenu">
@@ -456,29 +618,77 @@ footer {
   <div class="hero-bg"></div>
   <div class="hero-glow"></div>
   <div class="hero-content">
-    <div class="hero-badge">🚀 AI 教育生态构建者 · 持续进化中</div>
+    <div class="hero-badge">🧠 不直接给答案的 AI 导师 · 试试就知道</div>
     <h1>
       <span class="line1">立涛 AI 教育实验室</span>
       <span class="line2">构建下一代 AI 教育生态</span>
     </h1>
     <p class="hero-desc">
-      将三年 AI 技术实践沉淀为真正长期有价值的作品体系——<br>
-      互动课程 · 智能工具 · 编程游戏 · 教育研究，统一平台，开放展示。
+      一个可以<strong style="color:var(--accent2)">真正体验</strong>的 AI 教育平台——<br>
+      选个话题，感受 AI 如何通过追问让你自己发现答案。
     </p>
     <div class="hero-btns">
-      <a href="#projects" class="btn-primary">🗂️ 浏览所有项目</a>
-      <a href="#courses" class="btn-ghost">📚 查看课程体系</a>
+      <a href="#ai-demo" class="btn-primary">⚡ 体验 AI 导师</a>
+      <a href="#projects" class="btn-ghost">🗂️ 浏览所有项目</a>
     </div>
     <div class="hero-stats">
-      <div class="stat"><div class="stat-num">10+</div><div class="stat-label">开发项目</div></div>
-      <div class="stat"><div class="stat-num">7</div><div class="stat-label">核心作品</div></div>
-      <div class="stat"><div class="stat-num">3+</div><div class="stat-label">年 AI 实践</div></div>
-      <div class="stat"><div class="stat-num">300h+</div><div class="stat-label">教学时长</div></div>
+      <div class="stat"><div class="stat-num">3</div><div class="stat-label">演示话题</div></div>
+      <div class="stat"><div class="stat-num">0→1</div><div class="stat-label">体验引导</div></div>
+      <div class="stat"><div class="stat-num">3篇</div><div class="stat-label">博客深度</div></div>
+      <div class="stat"><div class="stat-num">7个</div><div class="stat-label">项目作品</div></div>
     </div>
   </div>
   <div class="scroll-indicator">
     <span>向下探索</span>
     <div class="scroll-dot"></div>
+  </div>
+</section>
+
+<!-- ==================== AI DEMO CARD ==================== -->
+<section id="ai-demo">
+  <div class="demo-section-inner">
+    <div class="demo-eyebrow">
+      <span class="demo-label">🧠 亲身体验</span>
+    </div>
+    <h2 class="demo-title">试试 AI <span>苏格拉底式追问</span></h2>
+    <p class="demo-sub">选择一个你感兴趣的话题，看 AI 如何通过追问让你自己发现答案</p>
+
+    <!-- Topic selector -->
+    <div class="demo-topics">
+      <button class="topic-btn active" data-topic="variable">
+        📦 变量是什么
+      </button>
+      <button class="topic-btn" data-topic="bubble">
+        🔄 冒泡排序
+      </button>
+      <button class="topic-btn" data-topic="if">
+        ❓ if 语句
+      </button>
+    </div>
+
+    <!-- Chat window -->
+    <div class="demo-window">
+      <div class="demo-header">
+        <div class="demo-dots">
+          <div class="demo-dot"></div>
+          <div class="demo-dot"></div>
+          <div class="demo-dot"></div>
+        </div>
+        <span class="demo-header-label">苏格拉底学习引擎 · 演示版</span>
+        <span class="demo-badge">⚡ AI 实时对话</span>
+      </div>
+
+      <div class="demo-chat" id="demoChat">
+        <!-- Messages injected by JS -->
+      </div>
+
+      <div class="demo-footer">
+        <div class="demo-input-hint">💬 选择话题开始体验 AI 追问……</div>
+        <a href="blog/posts/2026-05-17-socratic-ai.html" class="demo-cta">
+          完整对话体验 →
+        </a>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1013,12 +1223,12 @@ footer {
         <div class="blog-tags"><span class="tag">苏格拉底</span><span class="tag">AI导师</span><span class="tag">教育哲学</span></div>
         <div class="blog-read">阅读全文 →</div>
       </div>
-      <div class="blog-card reveal">
-        <div class="blog-date">即将发布</div>
+      <div class="blog-card reveal" onclick="location.href='blog/posts/2026-05-17-gamification-python.html'">
+        <div class="blog-date">2026-05-17 · 首发</div>
         <h3>用游戏化重新设计编程课：从 0 到第一个闯关关卡的全过程</h3>
         <p>如何把一个抽象的 Python 知识点，变成一个让学生停不下来的游戏关卡？设计思路完整复盘……</p>
         <div class="blog-tags"><span class="tag">游戏化</span><span class="tag">Python</span><span class="tag">教学设计</span></div>
-        <div class="blog-read" style="color:var(--muted);">敬请期待</div>
+        <div class="blog-read">阅读全文 →</div>
       </div>
       <div style="text-align:center;margin-top:36px" class="reveal">
         <a href="blog/index.html" class="view-more">📖 查看全部博客 →</a>
@@ -1163,6 +1373,107 @@ const sectionObserver = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.4 });
 document.querySelectorAll('section[id]').forEach(s => sectionObserver.observe(s));
+
+// ==================== AI DEMO CARD ====================
+const DEMO_DATA = {
+  variable: [
+    { role: 'user', text: '老师，Python 里变量是什么？' },
+    { role: 'ai', text: '你问得很好。我们先不急着下定义——我用一个比喻：你现在想象一个收纳盒，盒子上贴了一张标签（比如写着"身高"），盒子里放着一张纸条，上面写着"175"。你知道这张纸条上的数字是什么吗？' },
+    { role: 'ai', text: '那这张纸条——也就是盒子里放的东西——和盒子上贴的标签，哪一个会变化，哪一个不会？' },
+    { role: 'user', text: '标签不会变，但盒子里可以换新的纸条！' },
+    { role: 'ai', text: '完全正确！所以在 Python 里，变量名就是那张标签，而变量的值就是盒子里放的东西。你能举一个生活中"盒子里的值会变化"的例子吗？' },
+  ],
+  bubble: [
+    { role: 'user', text: '冒泡排序是什么意思？听起来像是在吹泡泡。' },
+    { role: 'ai', text: '哈哈名字确实有意思！先不说定义——我们来玩一个游戏。你现在有一排数字：[3, 1, 4, 1, 5]，我想让你把它们从小到大排好。' },
+    { role: 'ai', text: '你能用手比划一下，你会怎么比较前两个数？比较完了之后呢？' },
+    { role: 'user', text: '我会比较 3 和 1，发现 3 比 1 大，就把它们换一下位置……' },
+    { role: 'ai', text: '非常好！想象一下：大的数字像气泡一样，一点一点"浮"到右边去。小数字沉在左边。这个过程一直重复，直到所有数字都按顺序排好——这就是冒泡排序。' },
+    { role: 'ai', text: '那你知道为什么叫"冒泡"了吧？大的数字像气泡一样冒到上面（右边）去。' },
+  ],
+  if: [
+    { role: 'user', text: 'if 语句我听不太懂，是什么？' },
+    { role: 'ai', text: '别急，我们从生活场景出发。想象你早上出门——如果（if）下雨了，你就带伞；如果没下雨，就不带。' },
+    { role: 'ai', text: '对计算机来说，"如果下雨"就是一个条件。条件成立（True）时，执行带伞的动作；条件不成立（False）时，执行另一个动作。' },
+    { role: 'user', text: '哦！我懂了。就是做一个判断，然后根据结果走不同的路！' },
+    { role: 'ai', text: '你完全理解了！"根据判断结果，走不同的路"——这就是 if 语句的本质。' },
+  ],
+};
+
+const chat = document.getElementById('demoChat');
+const topicBtns = document.querySelectorAll('.topic-btn');
+let isPlaying = false;
+let currentTopic = null;
+
+function scrollBottom() {
+  chat.scrollTop = chat.scrollHeight;
+}
+
+async function typeText(el, text) {
+  for (let i = 0; i <= text.length; i++) {
+    el.textContent = text.slice(0, i);
+    scrollBottom();
+    await new Promise(r => setTimeout(r, 28));
+  }
+}
+
+async function showBubble(role, html) {
+  // show typing first
+  const typing = document.createElement('div');
+  typing.className = 'chat-typing';
+  typing.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
+  if (role === 'ai') typing.innerHTML += ' AI 正在输入…';
+  chat.appendChild(typing);
+  scrollBottom();
+  await new Promise(r => setTimeout(r, 600));
+
+  typing.remove();
+  const bubble = document.createElement('div');
+  bubble.className = `chat-bubble ${role}`;
+  if (role === 'ai') {
+    bubble.innerHTML = `<div class="speaker">🧠 苏格拉底导师</div>`;
+    const span = document.createElement('span');
+    bubble.appendChild(span);
+    chat.appendChild(bubble);
+    await typeText(span, html);
+  } else {
+    bubble.textContent = html;
+    chat.appendChild(bubble);
+    await new Promise(r => setTimeout(r, 200));
+  }
+  scrollBottom();
+}
+
+async function playConversation(topic) {
+  if (isPlaying) return;
+  isPlaying = true;
+  currentTopic = topic;
+  chat.innerHTML = '';
+
+  const msgs = DEMO_DATA[topic] || [];
+  for (const msg of msgs) {
+    await showBubble(msg.role, msg.text);
+    await new Promise(r => setTimeout(r, 400));
+  }
+
+  // final CTA in chat
+  const endBubble = document.createElement('div');
+  endBubble.className = 'chat-bubble ai';
+  endBubble.innerHTML = `<div class="speaker">🧠 苏格拉底导师</div><span>这只是演示版本。完整对话支持自定义话题、无限追问——<a href="blog/posts/2026-05-17-socratic-ai.html" style="color:var(--accent);font-weight:600;">体验完整版 →</a></span>`;
+  chat.appendChild(endBubble);
+  scrollBottom();
+
+  isPlaying = false;
+}
+
+// init
+topicBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    topicBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    playConversation(btn.dataset.topic);
+  });
+});
 </script>
 </body>
 </html>
