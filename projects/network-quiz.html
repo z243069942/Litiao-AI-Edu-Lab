@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>网络工程师备考助手</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=ZCOOL+XiaoWei&family=Noto+Sans+SC:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #080c18;
+  --bg2:     #0d1425;
+  --bg3:     #131d35;
+  --bg4:     #1a2645;
+  --cyan:    #00e5ff;
+  --cyan2:   #0088cc;
+  --green:   #00ff88;
+  --red:     #ff3d6b;
+  --yellow:  #ffd43b;
+  --orange:  #ff9f43;
+  --purple:  #c56bff;
+  --text:    #dde8ff;
+  --dim:     #6a7fa8;
+  --border:  #1c2e50;
+  --border2: #2a4070;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Noto Sans SC', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+/* Animated grid background */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(0,229,255,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,255,.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none; z-index: 0;
+}
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background: radial-gradient(ellipse at 20% 50%, rgba(0,100,200,.07) 0%, transparent 60%),
+              radial-gradient(ellipse at 80% 20%, rgba(0,229,255,.05) 0%, transparent 50%);
+  pointer-events: none; z-index: 0;
+}
+
+.wrap { max-width: 760px; margin: 0 auto; padding: 16px 20px 60px; position: relative; z-index: 1; }
+
+/* ─── HEADER ─── */
+.hdr { text-align: center; padding: 30px 0 10px; }
+.hdr-badge {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .72rem; letter-spacing: 3px;
+  color: var(--cyan); border: 1px solid rgba(0,229,255,.3);
+  padding: 4px 14px; border-radius: 20px;
+  background: rgba(0,229,255,.06);
+  margin-bottom: 14px;
+  text-transform: uppercase;
+}
+.hdr h1 {
+  font-family: 'ZCOOL XiaoWei', serif;
+  font-size: 2rem; font-weight: 400;
+  color: #fff; letter-spacing: 4px;
+  text-shadow: 0 0 40px rgba(0,229,255,.4);
+}
+.hdr p { color: var(--dim); font-size: .88rem; margin-top: 8px; }
+
+/* ─── SCREEN TRANSITIONS ─── */
+.screen { animation: fadeUp .35s ease both; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── HOME SCREEN ─── */
+#home { display: block; }
+#quiz-screen, #result-screen { display: none; }
+
+.section-label {
+  font-size: .78rem; color: var(--dim);
+  letter-spacing: 2px; text-transform: uppercase;
+  font-family: 'JetBrains Mono', monospace;
+  margin: 28px 0 14px;
+}
+
+.cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.cat-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 14px; padding: 22px 18px;
+  cursor: pointer; transition: all .2s;
+  position: relative; overflow: hidden;
+}
+.cat-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent, var(--cyan)), transparent);
+  opacity: 0; transition: opacity .2s;
+}
+.cat-card:hover { border-color: var(--accent, var(--cyan)); background: var(--bg3); transform: translateY(-2px); }
+.cat-card:hover::before { opacity: 1; }
+.cat-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,.3), 0 0 20px rgba(0,229,255,.08); }
+.cat-icon { font-size: 1.7rem; margin-bottom: 10px; }
+.cat-name { font-size: .95rem; font-weight: 600; color: var(--text); }
+.cat-sub  { font-size: .78rem; color: var(--dim); margin-top: 3px; }
+.cat-count {
+  display: inline-block; margin-top: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .72rem; color: var(--accent, var(--cyan));
+  background: rgba(0,229,255,.08); border: 1px solid rgba(0,229,255,.2);
+  padding: 2px 10px; border-radius: 10px;
+}
+
+.cat-card[data-cat="routing"]  { --accent: #00e5ff; }
+.cat-card[data-cat="subnet"]   { --accent: #00ff88; }
+.cat-card[data-cat="security"] { --accent: #ff3d6b; }
+.cat-card[data-cat="cabling"]  { --accent: #ffd43b; }
+
+.mix-btn {
+  width: 100%; margin-top: 12px;
+  padding: 16px; border: none; border-radius: 14px;
+  background: linear-gradient(135deg, #00e5ff 0%, #0077ff 100%);
+  color: #000; font-size: 1rem; font-weight: 700;
+  font-family: 'Noto Sans SC', sans-serif;
+  cursor: pointer; letter-spacing: 2px;
+  transition: all .2s; position: relative; overflow: hidden;
+}
+.mix-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,180,255,.35); }
+.mix-btn:active { transform: translateY(0); }
+
+/* Subnet calculator */
+.subnet-panel {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 20px; margin-top: 12px;
+}
+.subnet-panel h3 {
+  font-size: .85rem; color: var(--cyan);
+  font-family: 'JetBrains Mono', monospace;
+  margin-bottom: 12px; letter-spacing: 1px;
+}
+.subnet-row { display: flex; gap: 8px; }
+.subnet-inp {
+  flex: 1; background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: 8px; padding: 10px 14px;
+  color: var(--text); font-family: 'JetBrains Mono', monospace;
+  font-size: .9rem; outline: none; transition: border-color .15s;
+}
+.subnet-inp:focus { border-color: var(--cyan); }
+.subnet-inp::placeholder { color: var(--dim); }
+.calc-btn {
+  padding: 10px 16px; background: var(--cyan);
+  border: none; border-radius: 8px;
+  color: #000; font-weight: 700; cursor: pointer;
+  font-size: .85rem; font-family: 'Noto Sans SC', sans-serif;
+  white-space: nowrap; transition: all .15s;
+}
+.calc-btn:hover { background: #33ecff; }
+.subnet-out {
+  margin-top: 14px; font-family: 'JetBrains Mono', monospace;
+  font-size: .82rem; line-height: 2;
+  display: none;
+}
+.subnet-out.show { display: block; }
+.srow { display: flex; gap: 8px; align-items: center; }
+.slabel { color: var(--dim); min-width: 120px; font-size: .78rem; }
+.sval { color: var(--cyan); font-weight: 600; }
+.sval.green { color: var(--green); }
+.sval.yellow { color: var(--yellow); }
+.sval.red { color: var(--red); }
+.subnet-err { color: var(--red); font-size: .85rem; }
+
+/* ─── QUIZ SCREEN ─── */
+.quiz-top { margin-bottom: 20px; }
+.progress-track {
+  height: 3px; background: var(--bg3); border-radius: 2px;
+  margin-bottom: 16px; overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--cyan), #0077ff);
+  border-radius: 2px; transition: width .4s ease;
+}
+.quiz-meta {
+  display: flex; justify-content: space-between;
+  align-items: center; font-size: .82rem;
+}
+.cat-badge {
+  padding: 4px 12px; border-radius: 20px; font-size: .78rem;
+  font-weight: 600; letter-spacing: .5px;
+}
+.cat-badge.routing  { background: rgba(0,229,255,.12); color: var(--cyan); border: 1px solid rgba(0,229,255,.3); }
+.cat-badge.subnet   { background: rgba(0,255,136,.12); color: var(--green); border: 1px solid rgba(0,255,136,.3); }
+.cat-badge.security { background: rgba(255,61,107,.12); color: var(--red);  border: 1px solid rgba(255,61,107,.3); }
+.cat-badge.cabling  { background: rgba(255,212,59,.12); color: var(--yellow);border: 1px solid rgba(255,212,59,.3); }
+.cat-badge.mixed    { background: rgba(197,107,255,.12);color: var(--purple);border: 1px solid rgba(197,107,255,.3); }
+
+.score-pill {
+  font-family: 'JetBrains Mono', monospace; font-size: .82rem;
+  display: flex; gap: 4px; align-items: center;
+}
+.score-pill .s-correct { color: var(--green); }
+.score-pill .s-sep { color: var(--dim); }
+.score-pill .s-total  { color: var(--dim); }
+
+.q-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 16px; padding: 26px 24px; margin-bottom: 14px;
+}
+.q-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .75rem; color: var(--dim); margin-bottom: 10px;
+}
+.q-text {
+  font-size: 1.02rem; line-height: 1.75;
+  color: var(--text); margin-bottom: 22px;
+  font-weight: 400;
+}
+.q-text code {
+  font-family: 'JetBrains Mono', monospace;
+  background: var(--bg4); border-radius: 4px;
+  padding: 1px 6px; font-size: .9em;
+  color: var(--cyan);
+}
+
+.options { display: flex; flex-direction: column; gap: 9px; }
+.opt {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 10px; padding: 13px 16px;
+  cursor: pointer; transition: all .15s;
+  display: flex; align-items: flex-start; gap: 12px;
+  font-size: .93rem; line-height: 1.5;
+}
+.opt:hover:not(.locked) {
+  border-color: var(--cyan); background: rgba(0,229,255,.07);
+}
+.opt-lbl {
+  width: 26px; height: 26px; flex-shrink: 0;
+  border-radius: 50%; background: var(--bg4);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace; font-size: .75rem;
+  font-weight: 700; color: var(--dim); transition: all .15s;
+  margin-top: 1px;
+}
+.opt.correct { border-color: var(--green); background: rgba(0,255,136,.08); }
+.opt.correct .opt-lbl { background: var(--green); color: #000; }
+.opt.wrong   { border-color: var(--red);   background: rgba(255,61,107,.08); }
+.opt.wrong   .opt-lbl { background: var(--red);   color: #fff; }
+.opt.locked  { cursor: default; }
+.opt.missed  { border-color: rgba(0,255,136,.4); }
+
+.explain {
+  background: var(--bg3); border-left: 3px solid var(--cyan);
+  border-radius: 0 10px 10px 0;
+  padding: 14px 16px; margin-top: 12px;
+  font-size: .88rem; line-height: 1.8;
+  color: var(--dim); display: none;
+  animation: fadeUp .25s ease;
+}
+.explain.show { display: block; }
+.explain strong, .explain b { color: var(--cyan); font-weight: 600; }
+.explain .correct-tag {
+  display: inline-block; background: rgba(0,255,136,.15);
+  color: var(--green); border: 1px solid rgba(0,255,136,.3);
+  border-radius: 4px; padding: 0 8px; font-size: .78rem;
+  margin-bottom: 6px; font-family: 'JetBrains Mono', monospace;
+}
+.explain .wrong-tag {
+  display: inline-block; background: rgba(255,61,107,.15);
+  color: var(--red); border: 1px solid rgba(255,61,107,.3);
+  border-radius: 4px; padding: 0 8px; font-size: .78rem;
+  margin-bottom: 6px; font-family: 'JetBrains Mono', monospace;
+}
+
+.next-btn {
+  width: 100%; padding: 13px;
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: 10px; color: var(--text);
+  font-size: .93rem; font-weight: 600;
+  font-family: 'Noto Sans SC', sans-serif;
+  cursor: pointer; display: none; transition: all .2s;
+  margin-top: 4px;
+}
+.next-btn.show { display: block; }
+.next-btn:hover { border-color: var(--cyan); background: rgba(0,229,255,.08); color: var(--cyan); }
+
+/* ─── RESULT SCREEN ─── */
+.result-wrap { text-align: center; padding: 30px 0; }
+.result-ring {
+  width: 150px; height: 150px;
+  border-radius: 50%;
+  border: 3px solid var(--cyan);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  margin: 0 auto 24px;
+  box-shadow: 0 0 0 8px rgba(0,229,255,.05), 0 0 50px rgba(0,229,255,.2);
+  position: relative;
+}
+.result-pct  { font-family: 'JetBrains Mono', monospace; font-size: 2.6rem; font-weight: 700; color: var(--cyan); line-height: 1; }
+.result-sub  { font-size: .75rem; color: var(--dim); margin-top: 2px; }
+.result-title { font-size: 1.35rem; font-weight: 700; margin-bottom: 6px; }
+.result-msg  { color: var(--dim); font-size: .9rem; margin-bottom: 28px; }
+
+.cat-breakdown { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; text-align: left; margin: 24px 0; }
+.breakdown-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 16px;
+}
+.bd-name { font-size: .8rem; color: var(--dim); margin-bottom: 8px; }
+.bd-bar  { height: 5px; background: var(--bg4); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+.bd-fill { height: 100%; border-radius: 3px; transition: width .9s ease .2s; }
+.bd-pct  { font-family: 'JetBrains Mono', monospace; font-size: .82rem; }
+
+.btn-row { display: flex; gap: 10px; justify-content: center; }
+.restart-btn {
+  padding: 13px 36px;
+  background: linear-gradient(135deg, var(--cyan), var(--cyan2));
+  border: none; border-radius: 10px; color: #000;
+  font-size: .95rem; font-weight: 700;
+  font-family: 'Noto Sans SC', sans-serif; cursor: pointer;
+  transition: all .2s; letter-spacing: 1px;
+}
+.restart-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,180,255,.35); }
+.home-btn {
+  padding: 13px 24px;
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: 10px; color: var(--text);
+  font-size: .95rem; font-weight: 600;
+  font-family: 'Noto Sans SC', sans-serif; cursor: pointer;
+  transition: all .2s;
+}
+.home-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+
+/* ─── MISC ─── */
+.divider { height: 1px; background: var(--border); margin: 24px 0; }
+.tip-bar {
+  background: rgba(0,229,255,.05); border: 1px solid rgba(0,229,255,.15);
+  border-radius: 10px; padding: 10px 16px;
+  font-size: .8rem; color: var(--dim); margin-top: 12px;
+  display: flex; gap: 8px; align-items: flex-start;
+}
+.tip-bar span { color: var(--cyan); flex-shrink: 0; }
+
+@media (max-width: 560px) {
+  .cat-grid { grid-template-columns: 1fr; }
+  .cat-breakdown { grid-template-columns: 1fr; }
+  .hdr h1 { font-size: 1.6rem; }
+  .q-text { font-size: .95rem; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <div class="hdr screen">
+    <div class="hdr-badge">💻 计算机技术与软件资格考试</div>
+    <h1>网络工程师 备考助手</h1>
+    <p>专攻你的薄弱模块 · 即时解析 · 子网速算工具</p>
+  </div>
+
+  <!-- HOME SCREEN -->
+  <div id="home" class="screen">
+    <p class="section-label">▸ 选择练习模块</p>
+    <div class="cat-grid">
+      <div class="cat-card" data-cat="routing" onclick="startQuiz('routing')">
+        <div class="cat-icon">🔀</div>
+        <div class="cat-name">路由与交换</div>
+        <div class="cat-sub">OSPF · RIP · STP · VLAN · BGP</div>
+        <div class="cat-count">10 题</div>
+      </div>
+      <div class="cat-card" data-cat="subnet" onclick="startQuiz('subnet')">
+        <div class="cat-icon">🧮</div>
+        <div class="cat-name">子网划分 / IP计算</div>
+        <div class="cat-sub">CIDR · 掩码 · 广播地址 · 聚合</div>
+        <div class="cat-count">10 题</div>
+      </div>
+      <div class="cat-card" data-cat="security" onclick="startQuiz('security')">
+        <div class="cat-icon">🛡️</div>
+        <div class="cat-name">网络安全</div>
+        <div class="cat-sub">防火墙 · VPN · 加密 · 攻击防御</div>
+        <div class="cat-count">10 题</div>
+      </div>
+      <div class="cat-card" data-cat="cabling" onclick="startQuiz('cabling')">
+        <div class="cat-icon">🏗️</div>
+        <div class="cat-name">综合布线 / 组网设计</div>
+        <div class="cat-sub">六大子系统 · 线缆 · 拓扑</div>
+        <div class="cat-count">10 题</div>
+      </div>
+    </div>
+    <button class="mix-btn" onclick="startQuiz('mixed')">🎲 混合练习（全部40题）</button>
+
+    <div class="divider"></div>
+    <p class="section-label">▸ 子网速算工具</p>
+    <div class="subnet-panel">
+      <h3>⚡ CIDR 子网计算器</h3>
+      <div class="subnet-row">
+        <input class="subnet-inp" id="subnet-inp" type="text" placeholder="例：192.168.1.0/26 或 10.0.0.1/255.255.0.0">
+        <button class="calc-btn" onclick="calcSubnet()">计算</button>
+      </div>
+      <div class="subnet-out" id="subnet-out"></div>
+    </div>
+    <div class="tip-bar">
+      <span>💡</span>
+      <span>输入IP/前缀（如 <code style="background:var(--bg4);padding:1px 5px;border-radius:3px;color:var(--cyan);font-family:monospace">172.16.5.100/20</code>）或IP/掩码格式，即可快速计算子网信息</span>
+    </div>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div id="quiz-screen" class="screen">
+    <div class="quiz-top">
+      <div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div>
+      <div class="quiz-meta">
+        <div class="cat-badge" id="cat-badge">路由与交换</div>
+        <div class="score-pill">
+          <span class="s-correct" id="s-correct">0</span>
+          <span class="s-sep">/</span>
+          <span class="s-total"  id="s-total">0</span>
+          <span class="s-sep"> 答对</span>
+        </div>
+      </div>
+    </div>
+    <div class="q-card">
+      <div class="q-num" id="q-num">第 1 题 / 共 10 题</div>
+      <div class="q-text" id="q-text"></div>
+      <div class="options" id="options"></div>
+      <div class="explain" id="explain"></div>
+    </div>
+    <button class="next-btn" id="next-btn" onclick="nextQuestion()">下一题 →</button>
+  </div>
+
+  <!-- RESULT SCREEN -->
+  <div id="result-screen" class="screen">
+    <div class="result-wrap">
+      <div class="result-ring">
+        <div class="result-pct" id="res-pct">0%</div>
+        <div class="result-sub" id="res-sub">0 / 0</div>
+      </div>
+      <div class="result-title" id="res-title"></div>
+      <div class="result-msg"   id="res-msg"></div>
+      <div class="cat-breakdown" id="cat-breakdown"></div>
+      <div class="btn-row">
+        <button class="home-btn" onclick="goHome()">← 返回主页</button>
+        <button class="restart-btn" id="restart-btn" onclick="restartQuiz()">再来一次 ↺</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script>
+/* ─── QUESTION BANK ─── */
+const QB = {
+  routing: [
+    { q:"OSPF（开放最短路径优先）协议使用的路由算法是？", opts:["Dijkstra最短路径优先算法（SPF）","Bellman-Ford距离矢量算法","D-V距离矢量算法","水平分割算法"], ans:0,
+      ex:"<b>OSPF = 链路状态协议 = Dijkstra算法</b>。OSPF收集全网链路状态信息构建LSDB，再用Dijkstra的SPF算法算最短路径树。<br>RIP用Bellman-Ford（距离矢量）。考试出题常故意把两者混淆，记住：<b>OSPF→Dijkstra，RIP→Bellman-Ford</b>。" },
+    { q:"RIP协议规定网络最大跳数（Hop Count）为多少？超过此值认为网络不可达。", opts:["10跳","15跳","16跳代表不可达，最大可用15","255跳"], ans:2,
+      ex:"<b>RIP最大跳数15，16=不可达（∞）</b>。这限制了RIP只能用于小型网络。记忆口诀：<b>「RIP活到15，16就是死」</b>。这也是RIP收敛慢、存在路由环路问题的根源之一。" },
+    { q:"STP（生成树协议）选举根桥（Root Bridge）的依据是什么？", opts:["最高MAC地址优先","最高端口优先级","最小网桥ID（BID = 优先级 + MAC地址）","最多端口数量"], ans:2,
+      ex:"<b>BID = 网桥优先级（默认32768）+ MAC地址</b>，BID最小者当选根桥。优先级相同时比较MAC地址，<b>MAC小者胜出</b>。注意优先级步长是4096，可手动调低某台交换机优先级来控制选举结果。" },
+    { q:"不同VLAN之间要实现相互通信，必须通过哪种设备？", opts:["二层交换机","三层交换机或路由器","集线器（Hub）","无线AP"], ans:1,
+      ex:"VLAN隔离了<b>广播域</b>，不同VLAN间通信须经过<b>第三层（网络层）</b>设备。路由器或三层交换机通过路由/SVI（交换虚拟接口）实现VLAN间路由。二层交换机无法处理不同VLAN间的流量。" },
+    { q:"BGP（边界网关协议）主要应用于哪种场景？", opts:["不同自治系统（AS）之间的路由交换","同一AS内部的路由","局域网内动态路由","无线漫游管理"], ans:0,
+      ex:"<b>BGP = 外部网关协议（EGP）</b>，运行在不同AS（自治系统）之间，是互联网骨干运营商互联互通的核心协议，也叫「互联网路由协议」。<br>对比：<b>OSPF/RIP/IS-IS = IGP</b>，在AS内部运行。" },
+    { q:"OSPF协议在以太网（广播型网络）中，Hello报文的默认发送间隔和Dead间隔分别是？", opts:["5秒 / 20秒","30秒 / 120秒","10秒 / 40秒","60秒 / 240秒"], ans:2,
+      ex:"<b>以太网环境：Hello=10秒，Dead=40秒（4倍Hello）</b>。<br>非广播网络（NBMA）：Hello=30秒，Dead=120秒。<br>Dead超时未收到Hello则认为邻居失效，会触发LSU泛洪和重新计算路由。" },
+    { q:"802.1Q协议在以太帧中插入VLAN标签，其中VLAN ID字段占多少位？理论上最多支持多少个VLAN？", opts:["8位，最多256个","12位，最多4094个可用","16位，最多65535个","10位，最多1022个"], ans:1,
+      ex:"<b>VLAN ID = 12位 → 2¹² = 4096个</b>。但VLAN 0和VLAN 4095保留，实际可用 <b>1~4094，共4094个</b>。这是考试超高频考点！记忆：12位→4096→去掉0和4095→4094个可用。" },
+    { q:"关于静态路由，以下哪项描述正确？", opts:["静态路由管理距离（AD）默认为1，优先级高于所有动态路由","静态路由会自动适应网络拓扑变化","静态路由比OSPF消耗更多带宽","静态路由只能在大型网络中使用"], ans:0,
+      ex:"<b>静态路由AD=1</b>（比任何动态协议都低，优先级最高）。<br>常见AD值：静态=1，OSPF=110，RIP=120，eBGP=20，iBGP=200。<br>AD越小优先级越高。静态路由不会自动更新，网络变化需手动修改。" },
+    { q:"NAT（网络地址转换）技术最主要解决的问题是？", opts:["网络数据加密传输","实现私有IP地址与公网IP地址的相互转换，缓解IPv4地址短缺","提高网络传输速度","路由协议选路"], ans:1,
+      ex:"<b>NAT核心作用：私有地址↔公网地址转换</b>，使多台私有地址主机共享少量公网IP上网，大幅缓解IPv4枯竭。<br>私有地址范围：A类10.0.0.0/8，B类172.16.0.0/12，C类192.168.0.0/16。<br>PAT（端口NAT）是最常用形式。" },
+    { q:"RSTP（快速生成树，IEEE 802.1w）相比传统STP（802.1D）最主要的改进是？", opts:["支持更多VLAN配置","降低交换机CPU占用","大幅缩短网络收敛时间（从30-50秒到1-2秒）","减少MAC地址表大小"], ans:2,
+      ex:"<b>STP收敛约30-50秒，RSTP约1-2秒</b>。RSTP通过引入：①边缘端口（Edge Port，直接进入转发态）②备用/替代端口角色③点对点链路快速协商等机制实现快速收敛。RSTP完全向下兼容STP。" }
+  ],
+  subnet: [
+    { q:"网络 192.168.1.0/26 中，最多可分配给主机使用的IP地址数量是多少？", opts:["62个","64个","30个","126个"], ans:0,
+      ex:"<b>公式：可用主机数 = 2^(32−前缀) − 2</b><br>/26 → 主机位 = 32−26 = 6位<br>2⁶ = 64，减去网络地址（全0）和广播地址（全1）<br>→ <b>64 − 2 = 62个</b>可用主机。<br>减2是固定的，不要漏！" },
+    { q:"子网掩码 255.255.255.0 用CIDR前缀长度（斜线表示法）表示是？", opts:["/22","/24","/16","/28"], ans:1,
+      ex:"<b>255.255.255.0 = 11111111.11111111.11111111.00000000</b><br>数1的个数：8+8+8+0 = <b>24个</b> → /24<br>这是最常见的C类网络掩码，对应256个地址，可用主机254个。<br>快速记忆：255→8个1，128→1个1，192→2个1，224→3个1，240→4个1。" },
+    { q:"网络地址 192.168.1.128/25，该子网的广播地址是？", opts:["192.168.1.127","192.168.1.191","192.168.1.255","192.168.1.254"], ans:2,
+      ex:"<b>广播地址 = 网络地址 + 主机位全置1</b><br>/25 → 主机位=7位 → 最大主机位=1111111=127<br>128 + 127 = 255<br>→ 广播地址 = <b>192.168.1.255</b><br>（该子网范围：192.168.1.128 ~ 192.168.1.255）" },
+    { q:"/30 掩码的子网中有多少个可用主机？该掩码常用于什么场景？", opts:["2个，常用于路由器点对点链路","4个，用于小型局域网","6个，用于部门子网","14个，用于小型办公室"], ans:0,
+      ex:"<b>/30 主机位=2位，2²−2=2个可用主机</b><br>恰好够分配给路由器两端接口（一端一个IP），是<b>点对点（P2P）链路的标准选择</b>，极度节省地址空间。<br>广播地址掩码：255.255.255.252" },
+    { q:"IP地址 10.0.0.1，子网掩码 255.0.0.0，对应的网络地址是？", opts:["10.0.0.0","10.255.255.255","10.0.0.1","0.0.0.0"], ans:0,
+      ex:"<b>网络地址 = IP AND 子网掩码</b><br>10.0.0.1 AND 255.0.0.0<br>= 00001010.00000000.00000000.00000001<br>AND 11111111.00000000.00000000.00000000<br>= <b>10.0.0.0</b><br>规律：主机位全部置0即为网络地址。" },
+    { q:"将一个 /24（C类）网络均等划分为4个子网，每个子网最多有多少个可用主机？", opts:["30个","62个","14个","58个"], ans:1,
+      ex:"<b>划分4个子网需借2位</b>（2²=4）<br>原主机位8位，借2位后：剩余主机位 = 8−2 = 6位<br>可用主机数 = 2⁶−2 = <b>62个</b><br>子网掩码变为 255.255.255.192（/26）<br>口诀：借几位→子网数=2^借位，剩余位→主机=2^剩余−2" },
+    { q:"子网掩码 255.255.254.0 对应的CIDR前缀长度是？", opts:["/22","/23","/24","/21"], ans:1,
+      ex:"<b>254的二进制：11111110（7个1）</b><br>255.255.254.0 = 8+8+7+0 = <b>23个1</b> → /23<br>快速转换：常见第三字节值→<br>128=1个1(/17)，192=2个1(/18)，224=3个1(/19)<br>240=4个1(/20)，248=5个1(/21)，252=6个1(/22)<br><b>254=7个1(/23)，255=8个1(/24)</b>" },
+    { q:"IP地址 172.16.5.100，子网掩码 255.255.240.0（/20），所在网络的网络地址是？", opts:["172.16.0.0","172.16.5.0","172.16.4.0","172.16.16.0"], ans:0,
+      ex:"<b>关键：第三字节 5 AND 240</b><br>5  = 00000101<br>240= 11110000<br>AND= 00000000 = <b>0</b><br>→ 网络地址 = <b>172.16.0.0</b><br>（/20网络包含172.16.0.0 ~ 172.16.15.255，共4096个地址）" },
+    { q:"以下哪个IP地址属于B类私有地址范围？", opts:["10.168.1.1","172.20.5.1","192.168.100.1","100.64.0.1"], ans:1,
+      ex:"<b>三类私有地址范围：</b><br>A类：10.0.0.0 ~ 10.255.255.255（/8）<br>B类：172.16.0.0 ~ 172.31.255.255（/12）<br>C类：192.168.0.0 ~ 192.168.255.255（/16）<br>172.20.5.1在172.16~172.31范围内 → <b>B类私有地址</b>" },
+    { q:"对 192.168.0.0/24 和 192.168.1.0/24 进行路由汇总（超网聚合），结果是？", opts:["192.168.0.0/25","192.168.0.0/22","192.168.0.0/23","192.168.0.0/16"], ans:2,
+      ex:"<b>汇总方法：找共同的二进制前缀</b><br>192.168.<u>0</u>.0 → 第三字节 0 = 0000000<b>0</b><br>192.168.<u>1</u>.0 → 第三字节 1 = 0000000<b>1</b><br>前7位相同，第8位不同 → 共同前缀=16+7=<b>23位</b><br>汇总结果：<b>192.168.0.0/23</b>（含两个/24网段）" }
+  ],
+  security: [
+    { q:"ARP欺骗攻击（ARP Spoofing）的主要攻击原理和危害是？", opts:["向目标发大量数据包使其宕机","发送伪造ARP应答，将攻击者MAC绑定到目标IP，截获局域网通信（中间人攻击）","破坏目标的路由表","耗尽目标DNS缓存"], ans:1,
+      ex:"<b>ARP欺骗 = 中间人攻击（MITM）</b><br>攻击者向局域网主机发送伪造ARP Reply：<br>\"网关IP 对应 攻击者MAC\"<br>导致主机将本该发给网关的流量发给攻击者，实现流量截获、篡改。<br>防御：动态ARP检测（DAI）、静态ARP绑定。" },
+    { q:"SYN Flood攻击利用了TCP哪个机制的漏洞？", opts:["耗尽服务器半连接队列（SYN_RECV队列），使合法连接无法建立","伪造ACK报文破坏已建立连接","占用所有带宽","破坏TCP序号"], ans:0,
+      ex:"<b>SYN Flood = DoS攻击</b><br>攻击者发大量SYN包但不回ACK，服务器将这些\"半连接\"放入队列等待（SYN_RECV状态），队列满后合法用户无法建立新连接。<br>防御：<b>SYN Cookie技术</b>（不占队列，用Cookie验证合法性）、限速。" },
+    { q:"IDS（入侵检测系统）和IPS（入侵防御系统）最本质的区别是什么？", opts:["IDS价格更贵","IDS旁路部署只检测告警；IPS串联在线路中能主动阻断攻击","IDS支持加密流量分析","IPS只能检测病毒"], ans:1,
+      ex:"<b>核心区别：IDS=发现+报警，IPS=发现+报警+阻断</b><br>IDS：<b>旁路</b>部署，流量镜像到IDS，不影响正常通信，只告警记录<br>IPS：<b>串联</b>在链路中，检测到攻击可立即丢弃/拦截流量<br>IPS引入延迟，且误报会影响正常业务。" },
+    { q:"SSL/TLS协议在OSI参考模型中工作在哪一层？", opts:["网络层（第3层）","传输层（第4层）上、应用层（第7层）下（对应表示/会话层）","数据链路层（第2层）","物理层（第1层）"], ans:1,
+      ex:"<b>SSL/TLS = 应用层之下，TCP之上</b><br>对应OSI第5层（会话层）或第6层（表示层）。<br>SSL/TLS为上层应用提供：<b>①机密性（加密）②完整性（MAC）③身份认证（证书）</b><br>HTTP + SSL/TLS = HTTPS；SMTP + TLS = SMTPS。" },
+    { q:"PKI（公钥基础设施）体系中，数字证书由哪个实体负责签发？", opts:["CA（证书颁发机构）","RA（注册机构）","用户自己生成","防火墙管理员"], ans:0,
+      ex:"<b>CA = 数字世界的\"公证处\"</b><br>CA用<b>自己的私钥</b>对证书签名，任何人用CA公钥可验证证书真实性。<br>RA（Registration Authority）负责身份审核，审核通过后请CA签发。<br>证书内容：用户公钥+身份信息+CA签名+有效期。" },
+    { q:"DMZ（非军事化区）主要部署哪类服务器？网络架构上处于什么位置？", opts:["内部OA、ERP等核心系统","需对外提供服务的服务器（Web、邮件、DNS），位于内外防火墙之间","VPN集中器","核心数据库"], ans:1,
+      ex:"<b>DMZ = 内外防火墙之间的隔离区</b><br>部署：Web服务器、邮件服务器、DNS服务器、FTP服务器等对外服务。<br>安全逻辑：外网→DMZ→内网，层层设防。<br>DMZ被攻破不影响内网（还有内部防火墙隔离）。" },
+    { q:"IPSec VPN的两种工作模式——传输模式与隧道模式，主要区别是？", opts:["传输模式加密速度更快","传输模式只加密数据载荷（保留原IP头）；隧道模式加密整个原始IP包并重新封装","主模式和快速模式是IPSec的两种工作模式","AH和ESP分别对应两种模式"], ans:1,
+      ex:"<b>传输模式（Transport）</b>：保留原始IP头，只加密TCP/UDP载荷。用于<b>端到端</b>通信（主机↔主机）。<br><b>隧道模式（Tunnel）</b>：原始IP包完整加密，套上新IP头。用于<b>站点到站点</b>VPN（Router↔Router）。<br>记忆：隧道=把整包塞进\"隧道\"。" },
+    { q:"非对称加密中，A要向B发送加密消息，A应该用哪个密钥加密？", opts:["A的私钥","A的公钥","B的公钥","B的私钥"], ans:2,
+      ex:"<b>非对称加密口诀：</b><br>🔐 加密数据 → 用<b>接收方的公钥</b>（只有接收方私钥能解）<br>✍️ 数字签名 → 用<b>自己的私钥</b>（所有人用发送方公钥验证）<br>A→B发加密数据：A用<b>B的公钥</b>加密 → B用自己私钥解密 ✓" },
+    { q:"有状态防火墙（Stateful Inspection）相比简单包过滤防火墙的核心优势是？", opts:["能跟踪连接状态表，识别并过滤不属于合法连接的数据包","处理速度更快","无需配置ACL规则","支持更多用户并发"], ans:0,
+      ex:"<b>包过滤</b>：只看单个数据包的头部（IP、端口、协议），无记忆，可被伪造ACK绕过。<br><b>有状态检测</b>：维护连接状态表（SYN→SYN-ACK→ACK流程），只有属于合法已建立连接的包才允许通过，可防止伪造包攻击。" },
+    { q:"以下常用协议端口号，哪组全部正确？", opts:["HTTP=80, HTTPS=8080, FTP=21, SSH=22","HTTP=80, HTTPS=443, FTP=21, SSH=22","HTTP=80, HTTPS=443, FTP=22, SSH=21","HTTP=8080, HTTPS=443, FTP=21, SSH=22"], ans:1,
+      ex:"<b>必记端口表：</b><br>FTP=21（控制）/20（数据）| SSH=22 | Telnet=23<br>SMTP=25 | DNS=53 | HTTP=80 | POP3=110<br>IMAP=143 | <b>HTTPS=443</b> | RDP=3389<br>HTTPS用443不是8080！8080是HTTP的非标准备用端口。" }
+  ],
+  cabling: [
+    { q:"根据综合布线国家标准，综合布线系统（PDS）共分为几个子系统？", opts:["5个","6个","7个","4个"], ans:1,
+      ex:"<b>综合布线六大子系统：</b><br>①工作区子系统 ②水平子系统 ③干线（垂直）子系统<br>④管理间子系统 ⑤设备间子系统 ⑥建筑群子系统<br>记忆口诀：<b>\"工水干管设建\"</b>（工作-水平-干线-管理-设备-建筑群），共6个。" },
+    { q:"综合布线标准规定，水平子系统的固定水平电缆（从配线架到信息插座）最大长度是？", opts:["90米","100米","75米","120米"], ans:0,
+      ex:"<b>水平电缆（永久链路）：最大90米</b><br>加上两端跳线和设备连接线（合计≤10米），整个<b>信道（Channel）总长≤100米</b>。<br>记忆：<b>90+10=100</b>（90米固定缆，10米跳线设备线，总通道100米）。考试考固定部分就答90米。" },
+    { q:"TIA/EIA-568标准定义了两种RJ-45跳线线序，分别是？", opts:["T568A 和 T568B","EIA-A 和 EIA-B","Cat5线序 和 Cat6线序","直通线序 和 交叉线序"], ans:0,
+      ex:"<b>T568A 和 T568B</b> 是两种接头线序标准（8根线的排列顺序不同）。<br>直通线：两端相同线序（都用B或都用A）<br>交叉线：一端T568A + 一端T568B<br>国内工程中<b>T568B更常用</b>。考试需能识别两种线序图。" },
+    { q:"交叉网线（Crossover Cable）适合连接哪类设备？", opts:["PC连接交换机","同类设备直连（PC-PC、Switch-Switch、Hub-Hub）","路由器连接交换机","所有设备都用交叉线"], ans:1,
+      ex:"<b>直通线（Straight-through）</b>：连接异类设备（PC↔Switch, Router↔Switch）<br><b>交叉线（Crossover）</b>：连接同类设备（PC↔PC, Switch↔Switch, Router↔Router）<br>现代设备大多支持<b>Auto-MDI/MDIX自动协商</b>，实际工程中已无需区分，但考试还是要知道。" },
+    { q:"关于单模光纤（SMF）和多模光纤（MMF），以下描述正确的是？", opts:["单模传输距离更远（数十公里），多模适用于短距离（≤2km）","多模光纤传输距离比单模更远","单模光纤纤芯直径比多模更粗","多模光纤价格比单模更贵"], ans:0,
+      ex:"<b>单模（SMF）</b>：纤芯约9μm，激光光源，单条光路，色散小 → 传输距离可达数十至数百公里，<b>用于长距离骨干链路</b>。<br><b>多模（MMF）</b>：纤芯50/62.5μm，LED光源，多条光路，色散大 → 最远约2km，<b>用于园区/楼宇内部</b>。<br>单模贵，多模便宜。" },
+    { q:"超五类双绞线（Cat5e）支持的以太网标准和最高传输速率是？", opts:["100BASE-TX，最高100Mbps","1000BASE-T，最高1Gbps","10GBASE-T，最高10Gbps","10BASE-T，最高10Mbps"], ans:1,
+      ex:"<b>线缆速率对照表（必记）：</b><br>Cat5：100Mbps（百兆）<br><b>Cat5e：1Gbps（千兆）← 超五类</b><br>Cat6：1Gbps（100m），10Gbps（≤55m）<br>Cat6A：10Gbps（100m）<br>Cat7：10Gbps（100m，屏蔽）<br>考试Cat5e答1Gbps，不要和Cat5混淆。" },
+    { q:"标准19英寸机柜中，1U（Unit）单位的高度是多少毫米？", opts:["22.22mm（0.875英寸）","44.45mm（1.75英寸）","50mm","38.1mm（1.5英寸）"], ans:1,
+      ex:"<b>1U = 1.75英寸 = 44.45mm</b>，这是行业标准。<br>2U = 88.9mm，42U机柜高度约2米（常见标准机柜）。<br>设备标注「1U服务器」、「2U机架」等都基于此单位。这个数字考试偶尔考，记住<b>44.45mm</b>。" },
+    { q:"星型（Star）拓扑结构最主要的缺点是？", opts:["布线复杂、成本高","中心节点故障会导致整个网络中断（单点故障）","难以扩展新节点","故障定位困难"], ans:1,
+      ex:"<b>星型拓扑优缺点：</b><br>✅ 优点：故障隔离好（单节点故障不影响他人）、易管理维护、易扩展<br>❌ 缺点：<b>中心节点是单点故障（SPOF）</b>，中心交换机/Hub挂掉则全网中断；需要大量线缆汇聚到中心。<br>解决方案：部署冗余核心交换机。" },
+    { q:"万兆以太网（10GbE）在100米距离内运行，应选用哪种线缆？", opts:["Cat5e超五类双绞线","Cat6A（超六类增强型）或七类屏蔽双绞线，也可用光纤","标准Cat6（六类）100m","同轴电缆"], ans:1,
+      ex:"<b>10GbE铜缆选型：</b><br>标准Cat6：仅支持10GbE最长<b>55米</b><br><b>Cat6A（超六类）</b>：支持10GbE全程<b>100米</b> ← 正确选择<br>Cat7（屏蔽）：同样支持100米<br>光纤：支持更长距离，无距离限制顾虑<br>Cat5e和普通Cat6不满足100米10GbE需求。" },
+    { q:"综合布线工程中，管理间子系统（IDF，楼层配线间）的核心设备是？", opts:["服务器和存储设备","楼层配线架（Patch Panel）和交换机","核心路由器","UPS不间断电源"], ans:1,
+      ex:"<b>管理间子系统 = 楼层弱电间</b><br>核心设备：<b>配线架（Patch Panel）</b>+<b>楼层交换机</b><br>配线架作用：将水平缆线规范化终接，通过跳线灵活调整连接关系（便于管理、移机）。<br>设备间（MDF/主机房）才放服务器、核心交换机、路由器等核心设备。" }
+  ]
+};
+
+const catInfo = {
+  routing:  { name:"路由与交换", color:"routing",  icon:"🔀" },
+  subnet:   { name:"子网划分",   color:"subnet",   icon:"🧮" },
+  security: { name:"网络安全",   color:"security", icon:"🛡️" },
+  cabling:  { name:"综合布线",   color:"cabling",  icon:"🏗️" },
+  mixed:    { name:"混合练习",   color:"mixed",    icon:"🎲" }
+};
+
+/* ─── STATE ─── */
+let state = {
+  mode: null, questions: [],
+  idx: 0, answered: false,
+  correct: 0, total: 0,
+  catScores: { routing:{c:0,t:0}, subnet:{c:0,t:0}, security:{c:0,t:0}, cabling:{c:0,t:0} }
+};
+
+function shuffle(arr) {
+  const a = [...arr];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+
+function startQuiz(mode) {
+  state.mode = mode;
+  state.idx = 0; state.correct = 0; state.total = 0; state.answered = false;
+  state.catScores = { routing:{c:0,t:0}, subnet:{c:0,t:0}, security:{c:0,t:0}, cabling:{c:0,t:0} };
+
+  if(mode === 'mixed') {
+    let qs = [];
+    for(const cat of ['routing','subnet','security','cabling']) {
+      QB[cat].forEach(q => qs.push({...q, cat}));
+    }
+    state.questions = shuffle(qs);
+  } else {
+    state.questions = shuffle(QB[mode].map(q => ({...q, cat: mode})));
+  }
+
+  show('quiz-screen');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = state.questions[state.idx];
+  const total = state.questions.length;
+  state.answered = false;
+
+  // Progress
+  document.getElementById('prog-fill').style.width = (state.idx/total*100)+'%';
+  document.getElementById('q-num').textContent = `第 ${state.idx+1} 题 / 共 ${total} 题`;
+  document.getElementById('s-correct').textContent = state.correct;
+  document.getElementById('s-total').textContent   = state.idx;
+
+  // Badge
+  const ci = catInfo[state.mode === 'mixed' ? q.cat : state.mode];
+  const badge = document.getElementById('cat-badge');
+  badge.textContent = (state.mode === 'mixed' ? catInfo[q.cat] : ci).name;
+  badge.className = 'cat-badge ' + (state.mode === 'mixed' ? q.cat : state.mode);
+
+  // Question
+  document.getElementById('q-text').innerHTML = q.q;
+
+  // Options
+  const optDiv = document.getElementById('options');
+  optDiv.innerHTML = '';
+  const labels = ['A','B','C','D'];
+  q.opts.forEach((opt, i) => {
+    const el = document.createElement('div');
+    el.className = 'opt';
+    el.innerHTML = `<div class="opt-lbl">${labels[i]}</div><div>${opt}</div>`;
+    el.onclick = () => answer(i, q);
+    optDiv.appendChild(el);
+  });
+
+  // Hide explain/next
+  const ex = document.getElementById('explain');
+  ex.className = 'explain'; ex.innerHTML = '';
+  const nb = document.getElementById('next-btn');
+  nb.className = 'next-btn';
+  nb.textContent = (state.idx+1 >= state.questions.length) ? '查看结果 →' : '下一题 →';
+}
+
+function answer(chosen, q) {
+  if(state.answered) return;
+  state.answered = true;
+
+  const opts = document.querySelectorAll('.opt');
+  opts.forEach(o => o.classList.add('locked'));
+
+  const isCorrect = chosen === q.ans;
+  if(isCorrect) state.correct++;
+  state.total++;
+  state.catScores[q.cat].t++;
+  if(isCorrect) state.catScores[q.cat].c++;
+
+  opts[chosen].classList.add(isCorrect ? 'correct' : 'wrong');
+  if(!isCorrect) opts[q.ans].classList.add('missed');
+
+  // Explanation
+  const ex = document.getElementById('explain');
+  const tag = isCorrect
+    ? '<span class="correct-tag">✓ 回答正确</span>'
+    : `<span class="wrong-tag">✗ 正确答案：${'ABCD'[q.ans]}</span>`;
+  ex.innerHTML = tag + '<br>' + q.ex;
+  ex.className = 'explain show';
+
+  // Update score display
+  document.getElementById('s-correct').textContent = state.correct;
+  document.getElementById('s-total').textContent   = state.total;
+
+  document.getElementById('next-btn').className = 'next-btn show';
+}
+
+function nextQuestion() {
+  state.idx++;
+  if(state.idx >= state.questions.length) {
+    showResult();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showResult() {
+  show('result-screen');
+  const pct = Math.round(state.correct/state.questions.length*100);
+  document.getElementById('res-pct').textContent = pct+'%';
+  document.getElementById('res-sub').textContent = `${state.correct} / ${state.questions.length} 题`;
+  document.getElementById('prog-fill').style.width = '100%';
+
+  let title, msg;
+  if(pct>=90){title='🏆 优秀！通过稳了';    msg='你已掌握这些模块，保持状态继续刷题！';}
+  else if(pct>=75){title='👍 良好，继续加油';  msg='基础扎实，重点复习错题的解析部分。';}
+  else if(pct>=60){title='📖 及格线边缘';     msg='需要加强记忆，建议重刷薄弱模块。';}
+  else           {title='💪 加油，还需努力'; msg='建议先系统复习知识点，再进行刷题练习。';}
+  document.getElementById('res-title').textContent = title;
+  document.getElementById('res-msg').textContent   = msg;
+
+  // Category breakdown
+  const bd = document.getElementById('cat-breakdown');
+  bd.innerHTML = '';
+  const cats = state.mode === 'mixed'
+    ? ['routing','subnet','security','cabling']
+    : [state.mode];
+  const colors = {routing:'#00e5ff',subnet:'#00ff88',security:'#ff3d6b',cabling:'#ffd43b'};
+  cats.forEach(cat => {
+    const s = state.catScores[cat];
+    if(!s.t) return;
+    const p = Math.round(s.c/s.t*100);
+    const card = document.createElement('div');
+    card.className = 'breakdown-card';
+    card.innerHTML = `
+      <div class="bd-name">${catInfo[cat].icon} ${catInfo[cat].name}</div>
+      <div class="bd-bar"><div class="bd-fill" style="width:0%;background:${colors[cat]}" data-pct="${p}"></div></div>
+      <div class="bd-pct" style="color:${colors[cat]}">${s.c}/${s.t} · ${p}%</div>`;
+    bd.appendChild(card);
+  });
+  setTimeout(() => {
+    document.querySelectorAll('.bd-fill').forEach(el => {
+      el.style.width = el.dataset.pct + '%';
+    });
+  }, 100);
+
+  document.getElementById('restart-btn').textContent =
+    state.mode === 'mixed' ? '再来40题 ↺' : `再刷${catInfo[state.mode].name} ↺`;
+}
+
+function restartQuiz() { startQuiz(state.mode); }
+function goHome() { show('home'); }
+
+function show(id) {
+  ['home','quiz-screen','result-screen'].forEach(s => {
+    document.getElementById(s).style.display = 'none';
+  });
+  const el = document.getElementById(id);
+  el.style.display = 'block';
+  el.classList.remove('screen');
+  void el.offsetWidth;
+  el.classList.add('screen');
+}
+
+/* ─── SUBNET CALCULATOR ─── */
+function calcSubnet() {
+  const raw = document.getElementById('subnet-inp').value.trim();
+  const out = document.getElementById('subnet-out');
+  out.innerHTML = '';
+
+  try {
+    let ip, prefix;
+    if(raw.includes('/')) {
+      const [ipPart, maskPart] = raw.split('/');
+      ip = parseIP(ipPart.trim());
+      if(maskPart.includes('.')) {
+        const m = parseIP(maskPart.trim());
+        prefix = maskToBits(m);
+      } else {
+        prefix = parseInt(maskPart);
+      }
+    } else throw new Error('格式错误');
+
+    if(isNaN(prefix)||prefix<0||prefix>32) throw new Error('前缀长度应在0-32之间');
+
+    const mask    = buildMask(prefix);
+    const network = ip & mask;
+    const bcast   = network | (~mask >>> 0);
+    const first   = prefix < 31 ? network + 1 : network;
+    const last    = prefix < 31 ? bcast  - 1  : bcast;
+    const hosts   = prefix < 31 ? Math.pow(2, 32-prefix) - 2 : (prefix===31?2:1);
+    const total   = Math.pow(2, 32-prefix);
+
+    out.innerHTML = `
+      <div class="srow"><span class="slabel">网络地址</span>   <span class="sval">${n2ip(network)}</span></div>
+      <div class="srow"><span class="slabel">子网掩码</span>   <span class="sval">${n2ip(mask)} &nbsp;(/${prefix})</span></div>
+      <div class="srow"><span class="slabel">广播地址</span>   <span class="sval yellow">${n2ip(bcast)}</span></div>
+      <div class="srow"><span class="slabel">可用IP范围</span> <span class="sval green">${n2ip(first)} ~ ${n2ip(last)}</span></div>
+      <div class="srow"><span class="slabel">可用主机数</span> <span class="sval green">${hosts.toLocaleString()} 个</span></div>
+      <div class="srow"><span class="slabel">地址总数</span>   <span class="sval">${total.toLocaleString()} 个</span></div>
+      <div class="srow"><span class="slabel">IP类型</span>     <span class="sval">${ipClass(network)}${isPrivate(network)?'（私有地址）':''}</span></div>
+    `;
+    out.className = 'subnet-out show';
+  } catch(e) {
+    out.innerHTML = `<span class="subnet-err">⚠ ${e.message}。请输入如：192.168.1.0/26</span>`;
+    out.className = 'subnet-out show';
+  }
+}
+
+function parseIP(s) {
+  const p = s.split('.').map(Number);
+  if(p.length!==4||p.some(x=>isNaN(x)||x<0||x>255)) throw new Error('IP格式错误');
+  return ((p[0]<<24)|(p[1]<<16)|(p[2]<<8)|p[3]) >>> 0;
+}
+function buildMask(prefix) {
+  return prefix === 0 ? 0 : (0xFFFFFFFF << (32-prefix)) >>> 0;
+}
+function maskToBits(m) {
+  let n = m, c = 0;
+  while(n) { c += n & 1; n >>>= 1; }
+  return c;
+}
+function n2ip(n) {
+  n = n>>>0;
+  return [(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255].join('.');
+}
+function ipClass(n) {
+  const first = (n>>>24)&255;
+  if(first<128)return 'A类'; if(first<192)return 'B类';
+  if(first<224)return 'C类'; if(first<240)return 'D类（组播）';
+  return 'E类（保留）';
+}
+function isPrivate(n) {
+  const a=(n>>>24)&255,b=(n>>>16)&255;
+  return a===10 || (a===172&&b>=16&&b<=31) || (a===192&&b===168);
+}
+
+document.getElementById('subnet-inp').addEventListener('keydown', e => {
+  if(e.key==='Enter') calcSubnet();
+});
+</script>
+</body>
+</html>
